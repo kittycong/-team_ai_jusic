@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quant Signal Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header class="hero">
+    <nav class="topbar">
+      <div>
+        <p class="eyebrow">LIVE EQUITY RESEARCH WORKBENCH</p>
+        <h1>Quant Signal Desk</h1>
+      </div>
+      <a class="nav-cta" href="#workbench">실제 종목 분석</a>
+    </nav>
+
+    <section class="hero-grid">
+      <div class="hero-copy">
+        <p class="hero-kicker">샘플 데모에서 실제 종목 대응형으로 업데이트</p>
+        <h2>한국과 미국 종목을 검색하고, 스냅샷과 실시간 가격을 함께 보는 퀀트 매수 보조 앱</h2>
+        <p class="hero-body">
+          기본 비교표는 실제 상장 종목으로 채웠고, 종목 검색과 티커 선택이 가능하며,
+          브라우저에서 호출 가능한 데이터 공급자를 연결해 가격 갱신까지 할 수 있게 구성했습니다.
+        </p>
+        <div class="hero-actions">
+          <a class="button solid" href="#actual-universe">실제 종목 보기</a>
+          <a class="button ghost" href="#provider-lab">실시간 연결 설정</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel">
+        <div class="panel-label">UPGRADE STATUS</div>
+        <div class="signal-stack">
+          <div>
+            <span>실제 종목 프리셋</span>
+            <strong>KR + US Universe</strong>
+          </div>
+          <div>
+            <span>검색 방식</span>
+            <strong>종목명 / 티커 검색</strong>
+          </div>
+          <div>
+            <span>실시간 가격</span>
+            <strong>Stooq / Alpha / Twelve</strong>
+          </div>
+        </div>
+        <p class="panel-note">
+          이 앱은 투자 판단을 구조화하기 위한 참고 도구입니다. 실시간 가격과 스냅샷 재무 데이터는 서로 시차가 있을 수 있습니다.
+        </p>
+      </aside>
+    </section>
+  </header>
+
+  <main>
+    <section class="strip">
+      <article>
+        <span>Real Names</span>
+        <strong>실제 상장 종목 프리셋</strong>
+      </article>
+      <article>
+        <span>Search</span>
+        <strong>티커와 회사명 검색</strong>
+      </article>
+      <article>
+        <span>Live Quote</span>
+        <strong>실시간 가격 갱신 연결</strong>
+      </article>
+      <article>
+        <span>Quant View</span>
+        <strong>팩터 점수와 리스크 규율</strong>
+      </article>
+    </section>
+
+    <section class="section" id="actual-universe">
+      <div class="section-heading">
+        <p class="eyebrow">ACTUAL UNIVERSE</p>
+        <h3>실제 종목 프리셋</h3>
+        <p>대표 종목을 바로 불러와 워크벤치에 넣을 수 있습니다. 한국 종목은 2026년 5월 11일 기준 스냅샷, 미국 종목은 현재가 갱신을 지원하도록 설계했습니다.</p>
+        <p class="section-meta" id="marketCoverage"></p>
+      </div>
+      <div class="preset-grid" id="presetGrid"></div>
+    </section>
+
+    <section class="section" id="investing-capture">
+      <div class="section-heading">
+        <p class="eyebrow">INVESTING CAPTURE</p>
+        <h3>Investing.com 반영 상태</h3>
+        <p>공개 `markets` 페이지에서 확인 가능한 시그널과, `ProPicks Top Value Stocks` 경로에서 구조만 확인된 항목을 분리해서 기록했습니다.</p>
+      </div>
+      <div class="capture-grid" id="investingCaptureGrid"></div>
+    </section>
+
+    <section class="section" id="propicks-live">
+      <div class="section-heading">
+        <p class="eyebrow">PROPICKS LIVE</p>
+        <h3>실제 ProPicks 캡처</h3>
+        <p>2026년 5월 12일 로그인 세션에서 확인한 `Top Value Stocks / US20` 전략 정보를 앱에 반영했습니다. 현재 편입 20종목 이름은 계정 권한상 마스킹되어 있었지만 전략 메타데이터와 성과 수치는 읽어올 수 있었습니다.</p>
+      </div>
+      <div class="propicks-grid">
+        <article class="propicks-panel" id="propicksSummary"></article>
+        <article class="propicks-panel" id="propicksWinners"></article>
+      </div>
+    </section>
+
+    <section class="section" id="etf-allocator">
+      <div class="section-heading">
+        <p class="eyebrow">ETF ALLOCATOR</p>
+        <h3>ETF 구성 예시</h3>
+        <p>개별 종목 집중 리스크를 낮추기 위한 ETF 모델 구성을 함께 보여줍니다. 미국 중심과 한국 혼합형을 한 화면에서 비교할 수 있게 했습니다.</p>
+      </div>
+      <div class="etf-grid" id="etfGrid"></div>
+    </section>
+
+    <section class="section provider-lab" id="provider-lab">
+      <div class="section-heading">
+        <p class="eyebrow">PROVIDER LAB</p>
+        <h3>실시간 연결 설정</h3>
+        <p>정적 파일에서도 동작하도록 브라우저 호출이 가능한 공급자만 연결했습니다. 미국 종목은 무키 Stooq, 글로벌/한국 종목은 API 키 기반 Alpha Vantage 또는 Twelve Data를 사용할 수 있습니다.</p>
+      </div>
+
+      <div class="provider-grid">
+        <article class="provider-card">
+          <h4>실시간 공급자</h4>
+          <label>
+            Provider
+            <select id="providerSelect">
+              <option value="snapshot">Snapshot only</option>
+              <option value="stooq">Stooq (US, no key)</option>
+              <option value="alpha">Alpha Vantage (API key)</option>
+              <option value="twelve">Twelve Data (API key)</option>
+            </select>
+          </label>
+          <label>
+            API Key
+            <input id="apiKeyInput" type="password" placeholder="필요한 공급자만 입력">
+          </label>
+          <p class="provider-help" id="providerHelp"></p>
+        </article>
+
+        <article class="provider-card provider-source">
+          <h4>현재 선택 종목 데이터 메모</h4>
+          <div id="sourceMeta">
+            <p>종목을 선택하면 스냅샷 출처와 마지막 반영 시점을 보여줍니다.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="workbench">
+      <div class="section-heading">
+        <p class="eyebrow">WORKBENCH</p>
+        <h3>종목 검색과 퀀트 진단</h3>
+        <p>검색으로 종목을 고르고, 필요하면 실시간 가격을 새로고침한 뒤 퀀트 점수와 투자 스탠스를 계산합니다.</p>
+      </div>
+
+      <div class="workbench">
+        <form class="input-panel" id="stock-form">
+          <label>
+            검색 시장
+            <select id="marketFilter">
+              <option value="ALL">전체</option>
+              <option value="NASDAQ">NASDAQ</option>
+              <option value="KOREA">국내 전체</option>
+              <option value="KOSDAQ">KOSDAQ</option>
+              <option value="KRX">KRX 프리셋</option>
+            </select>
+          </label>
+          <label>
+            종목 검색
+            <input id="stockSearch" list="stockSuggestions" type="text" placeholder="예: 삼성전자, NVDA, 005930:KRX">
+            <datalist id="stockSuggestions"></datalist>
+          </label>
+          <p class="section-meta" id="matchSummary"></p>
+          <div class="recent-shell">
+            <strong>최근 선택</strong>
+            <div class="recent-list" id="recentSelections"></div>
+          </div>
+          <div class="inline-actions">
+            <button class="button ghost" type="button" id="loadStockButton">검색 종목 불러오기</button>
+            <button class="button ghost" type="button" id="refreshQuoteButton">실시간 가격 갱신</button>
+          </div>
+          <div class="auto-refresh-shell">
+            <label class="auto-refresh-toggle" for="autoRefreshToggle">
+              <input id="autoRefreshToggle" type="checkbox">
+              <span>매시간 자동 갱신</span>
+            </label>
+            <p class="section-meta" id="autoRefreshStatus">자동 갱신이 꺼져 있습니다.</p>
+            <p class="section-meta">`snapshot` 공급자는 저장된 스냅샷과 GitHub 갱신본을 다시 읽고, 실시간 공급자를 고르면 현재 선택 종목 가격을 1시간마다 갱신합니다.</p>
+          </div>
+
+          <label>
+            종목명
+            <input id="stockName" name="stockName" type="text">
+          </label>
+          <label>
+            티커 / 심볼
+            <input id="symbol" name="symbol" type="text">
+          </label>
+          <label>
+            현재가
+            <input id="price" name="price" type="number" step="0.01">
+          </label>
+          <label>
+            통화
+            <input id="currency" name="currency" type="text">
+          </label>
+          <label>
+            12개월 수익률 (%)
+            <input id="return12m" name="return12m" type="number" step="0.1">
+          </label>
+          <label>
+            ROE (%)
+            <input id="roe" name="roe" type="number" step="0.1">
+          </label>
+          <label>
+            부채비율 (%)
+            <input id="debtRatio" name="debtRatio" type="number" step="0.1">
+          </label>
+          <label>
+            PER
+            <input id="per" name="per" type="number" step="0.1">
+          </label>
+          <label>
+            PBR
+            <input id="pbr" name="pbr" type="number" step="0.1">
+          </label>
+          <label>
+            FCF Yield (%)
+            <input id="fcfYield" name="fcfYield" type="number" step="0.1">
+          </label>
+          <label>
+            최근 변동성 (%)
+            <input id="volatility" name="volatility" type="number" step="0.1">
+          </label>
+          <button class="button solid" type="submit">진단 업데이트</button>
+        </form>
+
+        <div class="result-panel">
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="48"></circle>
+              <circle class="ring-value" id="ringValue" cx="60" cy="60" r="48"></circle>
+            </svg>
+            <div class="ring-center">
+              <strong id="totalScore">0</strong>
+              <span>총점</span>
+            </div>
+          </div>
+
+          <div class="result-summary">
+            <div class="factor-grid" id="factorGrid"></div>
+            <div class="quote-banner">
+              <div>
+                <p class="eyebrow">LIVE STATUS</p>
+                <strong id="quotePrice">-</strong>
+              </div>
+              <div>
+                <span id="quoteChange">변동 정보 없음</span>
+                <small id="quoteTimestamp">실시간 갱신 전</small>
+              </div>
+            </div>
+            <div class="stance-card">
+              <p class="eyebrow">PRO DECISION</p>
+              <h4 id="stanceTitle">분석 대기</h4>
+              <p id="stanceBody">실제 종목을 선택하면 퀀트 스타일 점수와 투자 스탠스를 계산합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="financial-summary">
+      <div class="section-heading">
+        <p class="eyebrow">FINANCIAL SUMMARY</p>
+        <h3>종목 리서치 브리프</h3>
+        <p>단순 수치 나열이 아니라, 선택한 종목의 데이터 완성도, 핵심 논리, 경고 신호, 체크리스트까지 한 번에 읽을 수 있게 구성했습니다.</p>
+      </div>
+      <div class="financial-shell" id="financialSummaryShell"></div>
+    </section>
+
+    <section class="section section-dark" id="comparison">
+      <div class="section-heading">
+        <p class="eyebrow">COMPARISON</p>
+        <h3>실제 종목 비교 테이블</h3>
+        <p>현재 프리셋 유니버스를 점수 순서로 정렬합니다. 현재가는 실시간 값과 스냅샷 값이 혼합될 수 있으니, 가격보다 팩터 구조를 우선해서 보도록 설계했습니다.</p>
+        <p class="section-meta" id="comparisonMeta"></p>
+      </div>
+
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>종목</th>
+              <th>시장</th>
+              <th>현재가</th>
+              <th>모멘텀</th>
+              <th>퀄리티</th>
+              <th>밸류</th>
+              <th>리스크</th>
+              <th>종합점수</th>
+            </tr>
+          </thead>
+          <tbody id="stockRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="playbook">
+      <div class="section-heading">
+        <p class="eyebrow">PLAYBOOK</p>
+        <h3>실전 사용 메모</h3>
+        <p>이번 업데이트 이후 앱을 해석할 때 함께 기억해야 할 운영 규칙입니다.</p>
+      </div>
+
+      <div class="playbook-grid">
+        <article>
+          <span>01</span>
+          <h4>실시간 가격과 재무 스냅샷은 구분</h4>
+          <p>가격은 분 단위로 바뀌지만 ROE, PBR, FCF Yield는 분기 또는 일 단위 스냅샷입니다. 그래서 가격 갱신 뒤에도 재무 팩터가 즉시 같이 변하지는 않습니다.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h4>검색은 빠르게, 판단은 느리게</h4>
+          <p>이 앱은 종목 후보를 걸러내는 1차 워크벤치입니다. 점수가 높아도 실적 일정과 이벤트 리스크를 반드시 추가 확인해야 합니다.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h4>키 기반 공급자는 확장 여지</h4>
+          <p>Alpha Vantage와 Twelve Data를 연결해 두면 미국뿐 아니라 글로벌 심볼 대응 폭이 넓어집니다. 특히 한국 종목은 Twelve Data 쪽이 더 유연합니다.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Quant Signal Desk</p>
+    <p>교육 및 참고 목적의 투자 보조 도구</p>
+  </footer>
+
+  <script src="./market-data-loader.js"></script>
+  <script src="./app-loader.js"></script>
+</body>
+</html>
