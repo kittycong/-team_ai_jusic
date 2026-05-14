@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-14T22:41:11.343Z",
+  "sourceFile": "market-data.js",
+  "encoding": "gzip+base64",
+  "partCount": 5,
+  "parts": [
+    "part-01.txt",
+    "part-02.txt",
+    "part-03.txt",
+    "part-04.txt",
+    "part-05.txt"
+  ]
+}
