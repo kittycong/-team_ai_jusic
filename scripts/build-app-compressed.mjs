@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, "..");
 const sourcePath = path.join(rootDir, "app.js");
 const targetDir = path.join(rootDir, "app-compressed");
 const manifestPath = path.join(targetDir, "manifest.json");
-const chunkSize = 60000;
+const chunkSize = 4000;
 
 const source = await fs.readFile(sourcePath, "utf-8");
 const compressed = gzipSync(Buffer.from(source, "utf-8")).toString("base64");
