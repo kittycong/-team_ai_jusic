@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-14T22:49:06.001Z",
+  "sourceFile": "app.js",
+  "encoding": "gzip+base64",
+  "partCount": 1,
+  "parts": [
+    "part-01.txt"
+  ]
+}
