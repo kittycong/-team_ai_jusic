@@ -1,21 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-14T23:41:22.453Z",
+  "generatedAt": "2026-05-15T14:22:17.953Z",
   "sourceFile": "market-data.js",
   "encoding": "gzip+base64",
-  "partCount": 12,
+  "partCount": 1,
   "parts": [
-    "part-01.txt",
-    "part-02.txt",
-    "part-03.txt",
-    "part-04.txt",
-    "part-05.txt",
-    "part-06.txt",
-    "part-07.txt",
-    "part-08.txt",
-    "part-09.txt",
-    "part-10.txt",
-    "part-11.txt",
-    "part-12.txt"
+    "part-01.txt"
   ]
 }
