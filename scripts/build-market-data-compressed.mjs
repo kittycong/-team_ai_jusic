@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, "..");
 const sourcePath = path.join(rootDir, "market-data.js");
 const targetDir = path.join(rootDir, "market-data-compressed");
 const manifestPath = path.join(targetDir, "manifest.json");
-const chunkSize = 25000;
+const chunkSize = 1000000;
 
 const source = await fs.readFile(sourcePath, "utf-8");
 const prefix = "window.MARKET_MASTER = ";
