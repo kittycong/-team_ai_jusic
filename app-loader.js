@@ -1,3 +1,13 @@
+function loadScriptFallback(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`script fallback failed: ${src}`));
+    document.body.appendChild(script);
+  });
+}
+
 async function loadCompressedAppBundle() {
   const manifestResponse = await fetch("./app-compressed/manifest.json", { cache: "no-store" });
   if (!manifestResponse.ok) {
@@ -26,4 +36,7 @@ async function loadCompressedAppBundle() {
 
 window.__APP_BUNDLE_READY__ = loadCompressedAppBundle().catch((error) => {
   console.error("Failed to load app bundle", error);
+  return loadScriptFallback("./app.js").catch((fallbackError) => {
+    console.error("Failed to load raw app fallback", fallbackError);
+  });
 });

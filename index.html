@@ -6,7 +6,7 @@
   <title>Quant Signal Desk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -88,6 +88,19 @@
       <div class="preset-grid" id="presetGrid"></div>
     </section>
 
+    <section class="section" id="ipo-watch">
+      <div class="section-heading">
+        <p class="eyebrow">IPO / PRIVATE WATCH</p>
+        <h3>곧 상장할 주식과 SpaceX 같은 비상장 대기종목</h3>
+        <p>상장 임박 종목, 비상장 대형주, 그리고 관련 공개 수혜주와 뉴스를 한 칸에서 같이 보도록 만들었습니다.</p>
+        <p class="section-meta" id="ipoSectionMeta"></p>
+      </div>
+      <div class="ipo-watch-shell">
+        <div class="ipo-watch-grid" id="ipoWatchGrid"></div>
+        <div class="ipo-news-feed" id="ipoNewsFeed"></div>
+      </div>
+    </section>
+
     <section class="section" id="investing-capture">
       <div class="section-heading">
         <p class="eyebrow">INVESTING CAPTURE</p>
@@ -162,29 +175,50 @@
 
       <div class="workbench">
         <form class="input-panel" id="stock-form">
+          <section class="simple-guide" id="simpleGuide">
+            <div class="simple-guide-head">
+              <strong>가장 쉬운 사용법</strong>
+              <span>검색 → 후보 클릭 → 바로 분석</span>
+            </div>
+            <div class="simple-steps">
+              <article><span>1</span><p>회사명이나 티커 입력</p></article>
+              <article><span>2</span><p>아래 후보 카드 클릭</p></article>
+              <article><span>3</span><p>점수와 브리프 확인</p></article>
+            </div>
+            <div class="quick-chip-row">
+              <button class="quick-search-chip" type="button" data-quick-search="삼성전자">삼성전자</button>
+              <button class="quick-search-chip" type="button" data-quick-search="엔비디아">엔비디아</button>
+              <button class="quick-search-chip" type="button" data-quick-search="서비스나우">서비스나우</button>
+              <button class="quick-search-chip" type="button" data-quick-search="SpaceX">SpaceX 테마</button>
+            </div>
+          </section>
           <label>
             검색 시장
             <select id="marketFilter">
               <option value="ALL">전체</option>
               <option value="NASDAQ">NASDAQ</option>
               <option value="KOREA">국내 전체</option>
+              <option value="KOSPI">KOSPI</option>
               <option value="KOSDAQ">KOSDAQ</option>
               <option value="KRX">KRX 프리셋</option>
             </select>
           </label>
           <label>
             종목 검색
-            <input id="stockSearch" list="stockSuggestions" type="text" placeholder="예: 삼성전자, NVDA, 005930:KRX">
+            <input id="stockSearch" list="stockSuggestions" type="text" placeholder="예: 삼성전자, NVDA, 서비스나우, 005930:KRX" autocomplete="off">
             <datalist id="stockSuggestions"></datalist>
           </label>
           <p class="section-meta" id="matchSummary"></p>
+          <div class="search-results" id="searchResults"></div>
           <div class="recent-shell">
             <strong>최근 선택</strong>
             <div class="recent-list" id="recentSelections"></div>
           </div>
           <div class="inline-actions">
-            <button class="button ghost" type="button" id="loadStockButton">검색 종목 불러오기</button>
-            <button class="button ghost" type="button" id="refreshQuoteButton">실시간 가격 갱신</button>
+            <button class="button solid" type="button" id="loadStockButton">이 종목 분석하기</button>
+            <button class="button ghost" type="button" id="clearSearchButton">다시 찾기</button>
+            <button class="button ghost" type="button" id="refreshQuoteButton">가격만 새로고침</button>
+            <button class="button ghost" type="button" id="fullReviewButton">자세히 보기</button>
           </div>
           <div class="auto-refresh-shell">
             <label class="auto-refresh-toggle" for="autoRefreshToggle">
@@ -194,52 +228,56 @@
             <p class="section-meta" id="autoRefreshStatus">자동 갱신이 꺼져 있습니다.</p>
             <p class="section-meta">`snapshot` 공급자는 저장된 스냅샷과 GitHub 갱신본을 다시 읽고, 실시간 공급자를 고르면 현재 선택 종목 가격을 1시간마다 갱신합니다.</p>
           </div>
-
-          <label>
-            종목명
-            <input id="stockName" name="stockName" type="text">
-          </label>
-          <label>
-            티커 / 심볼
-            <input id="symbol" name="symbol" type="text">
-          </label>
-          <label>
-            현재가
-            <input id="price" name="price" type="number" step="0.01">
-          </label>
-          <label>
-            통화
-            <input id="currency" name="currency" type="text">
-          </label>
-          <label>
-            12개월 수익률 (%)
-            <input id="return12m" name="return12m" type="number" step="0.1">
-          </label>
-          <label>
-            ROE (%)
-            <input id="roe" name="roe" type="number" step="0.1">
-          </label>
-          <label>
-            부채비율 (%)
-            <input id="debtRatio" name="debtRatio" type="number" step="0.1">
-          </label>
-          <label>
-            PER
-            <input id="per" name="per" type="number" step="0.1">
-          </label>
-          <label>
-            PBR
-            <input id="pbr" name="pbr" type="number" step="0.1">
-          </label>
-          <label>
-            FCF Yield (%)
-            <input id="fcfYield" name="fcfYield" type="number" step="0.1">
-          </label>
-          <label>
-            최근 변동성 (%)
-            <input id="volatility" name="volatility" type="number" step="0.1">
-          </label>
-          <button class="button solid" type="submit">진단 업데이트</button>
+          <details class="advanced-shell" id="advancedShell">
+            <summary>고급 설정 열기</summary>
+            <div class="advanced-grid">
+              <label>
+                종목명
+                <input id="stockName" name="stockName" type="text">
+              </label>
+              <label>
+                티커 / 심볼
+                <input id="symbol" name="symbol" type="text">
+              </label>
+              <label>
+                현재가
+                <input id="price" name="price" type="number" step="0.01">
+              </label>
+              <label>
+                통화
+                <input id="currency" name="currency" type="text">
+              </label>
+              <label>
+                12개월 수익률 (%)
+                <input id="return12m" name="return12m" type="number" step="0.1">
+              </label>
+              <label>
+                ROE (%)
+                <input id="roe" name="roe" type="number" step="0.1">
+              </label>
+              <label>
+                부채비율 (%)
+                <input id="debtRatio" name="debtRatio" type="number" step="0.1">
+              </label>
+              <label>
+                PER
+                <input id="per" name="per" type="number" step="0.1">
+              </label>
+              <label>
+                PBR
+                <input id="pbr" name="pbr" type="number" step="0.1">
+              </label>
+              <label>
+                FCF Yield (%)
+                <input id="fcfYield" name="fcfYield" type="number" step="0.1">
+              </label>
+              <label>
+                최근 변동성 (%)
+                <input id="volatility" name="volatility" type="number" step="0.1">
+              </label>
+            </div>
+            <button class="button solid advanced-submit" type="submit">수치로 다시 계산</button>
+          </details>
         </form>
 
         <div class="result-panel">
@@ -255,6 +293,7 @@
           </div>
 
           <div class="result-summary">
+            <div class="simple-status" id="simpleStatus"></div>
             <div class="factor-grid" id="factorGrid"></div>
             <div class="quote-banner">
               <div>
@@ -289,26 +328,54 @@
       <div class="section-heading">
         <p class="eyebrow">COMPARISON</p>
         <h3>실제 종목 비교 테이블</h3>
-        <p>현재 프리셋 유니버스를 점수 순서로 정렬합니다. 현재가는 실시간 값과 스냅샷 값이 혼합될 수 있으니, 가격보다 팩터 구조를 우선해서 보도록 설계했습니다.</p>
+        <p>NASDAQ 상위 30개와 KOSPI 상위 30개를 각각 따로 보여줍니다. 현재가는 실시간 값과 스냅샷 값이 혼합될 수 있으니, 가격보다 팩터 구조를 우선해서 보도록 설계했습니다.</p>
         <p class="section-meta" id="comparisonMeta"></p>
       </div>
 
-      <div class="table-shell">
-        <table>
-          <thead>
-            <tr>
-              <th>종목</th>
-              <th>시장</th>
-              <th>현재가</th>
-              <th>모멘텀</th>
-              <th>퀄리티</th>
-              <th>밸류</th>
-              <th>리스크</th>
-              <th>종합점수</th>
-            </tr>
-          </thead>
-          <tbody id="stockRows"></tbody>
-        </table>
+      <div class="comparison-grid">
+        <div class="table-shell">
+          <div class="table-headline">
+            <strong>NASDAQ TOP 30</strong>
+            <small>전체 나스닥 유니버스 기준</small>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>종목</th>
+                <th>시장</th>
+                <th>현재가</th>
+                <th>모멘텀</th>
+                <th>퀄리티</th>
+                <th>밸류</th>
+                <th>리스크</th>
+                <th>종합점수</th>
+              </tr>
+            </thead>
+            <tbody id="nasdaqRows"></tbody>
+          </table>
+        </div>
+
+        <div class="table-shell">
+          <div class="table-headline">
+            <strong>KOSPI TOP 30</strong>
+            <small>코스피 대표 30종목 스냅샷 기준</small>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>종목</th>
+                <th>시장</th>
+                <th>현재가</th>
+                <th>모멘텀</th>
+                <th>퀄리티</th>
+                <th>밸류</th>
+                <th>리스크</th>
+                <th>종합점수</th>
+              </tr>
+            </thead>
+            <tbody id="kospiRows"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -335,6 +402,22 @@
           <h4>키 기반 공급자는 확장 여지</h4>
           <p>Alpha Vantage와 Twelve Data를 연결해 두면 미국뿐 아니라 글로벌 심볼 대응 폭이 넓어집니다. 특히 한국 종목은 Twelve Data 쪽이 더 유연합니다.</p>
         </article>
+      </div>
+    </section>
+
+    <section class="section" id="ops-suite">
+      <div class="section-heading">
+        <p class="eyebrow">OPS SUITE</p>
+        <h3>운영 확장 모듈</h3>
+        <p>리서치, 실시간 모니터링, 자동 전략, 포트폴리오 검증, 자동 보고까지 한 화면에서 이어서 보도록 구성한 운영 콘솔입니다.</p>
+      </div>
+
+      <div class="ops-grid" id="opsGrid">
+        <article class="ops-card" id="aiResearchCard"></article>
+        <article class="ops-card" id="marketWidgetCard"></article>
+        <article class="ops-card" id="strategyBotCard"></article>
+        <article class="ops-card" id="riskPortfolioCard"></article>
+        <article class="ops-card" id="automationCard"></article>
       </div>
     </section>
   </main>

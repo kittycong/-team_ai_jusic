@@ -1,0 +1,9 @@
+.next
+node_modules
+.pnpm-store
+dist
+build
+.env
+__pycache__
+.pytest_cache
+.venv
