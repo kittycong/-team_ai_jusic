@@ -550,7 +550,8 @@ const providerHelpText = {
   snapshot: "실시간 호출 없이 현재 내장된 실제 종목 스냅샷만 사용합니다.",
   stooq: "미국 종목만 무키로 현재가 갱신을 시도합니다. 한국 종목은 지원하지 않습니다.",
   alpha: "Alpha Vantage는 브라우저 호출이 가능하지만 API 키가 필요합니다. 글로벌 심볼 검색과 현재가 조회에 적합합니다.",
-  twelve: "Twelve Data는 API 키가 필요하며 KRX 심볼 예시로 005930:KRX 형식을 공식 지원합니다."
+  twelve: "Twelve Data는 API 키가 필요하며 KRX 심볼 예시로 005930:KRX 형식을 공식 지원합니다.",
+  kis: "한국투자 Open API는 브라우저에 비밀키를 두지 않기 위해 로컬 프록시를 사용합니다. `scripts/kis-quote-proxy.mjs`를 실행한 뒤 프록시 주소를 넣으면 한국 종목 현재가를 더 안정적으로 가져올 수 있습니다."
 };
 
 const investingCapture = [
@@ -781,6 +782,7 @@ const stockSuggestions = document.querySelector("#stockSuggestions");
 const factorGrid = document.querySelector("#factorGrid");
 const providerSelect = document.querySelector("#providerSelect");
 const apiKeyInput = document.querySelector("#apiKeyInput");
+const proxyUrlInput = document.querySelector("#proxyUrlInput");
 const providerHelp = document.querySelector("#providerHelp");
 const sourceMeta = document.querySelector("#sourceMeta");
 
@@ -815,6 +817,7 @@ const automationCard = document.querySelector("#automationCard");
 const RECENT_SELECTIONS_KEY = "quant-signal-desk-recent";
 const AUTO_REFRESH_KEY = "quant-signal-desk-auto-refresh";
 const LIVE_SNAPSHOT_URL = "./live-snapshots.json";
+const KIS_PROXY_URL_KEY = "quant.stock.kisProxyUrl";
 const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
 const UNIVERSE_ROW_LIMIT = 30;
 
@@ -921,13 +924,20 @@ function getFilteredCatalog() {
   return stockCatalog.filter((stock) => matchesMarketFilter(stock, market));
 }
 
+function getNormalizedSymbolCandidates(symbol = "") {
+  const normalized = String(symbol);
+  return Array.from(new Set([
+    normalized,
+    normalized.replace(/:(KOSDAQ|KOSPI|KRX)$/i, "")
+  ].filter(Boolean)));
+}
+
 function getSearchCandidates(stock) {
   return [
     stock.koName,
     stock.displayName,
     stock.name,
-    stock.symbol,
-    stock.symbol.replace(":KOSDAQ", "").replace(":KRX", ""),
+    ...getNormalizedSymbolCandidates(stock.symbol),
     ...(Array.isArray(stock.aliases) ? stock.aliases : []),
     `${stock.koName} (${stock.symbol})`,
     `${stock.displayName} (${stock.symbol})`,
@@ -939,14 +949,16 @@ function getSearchCandidates(stock) {
 
 function getSearchMatches(input, limit = 8) {
   const normalized = input.trim().toLowerCase();
-  const preferredIds = new Set(getFilteredCatalog().map((stock) => stock.id));
+  const filteredCatalog = getFilteredCatalog();
+  const activeMarket = getActiveMarketFilter();
+  const searchPool = activeMarket === "ALL" ? stockCatalog : filteredCatalog;
 
   if (!normalized) {
-    const visibleFeatured = featuredStockCatalog.filter((stock) => matchesMarketFilter(stock, getActiveMarketFilter()));
+    const visibleFeatured = featuredStockCatalog.filter((stock) => matchesMarketFilter(stock, activeMarket));
     return (visibleFeatured.length ? visibleFeatured : featuredStockCatalog).slice(0, limit);
   }
 
-  const ranked = stockCatalog
+  const ranked = searchPool
     .map((stock) => {
       const candidates = getSearchCandidates(stock);
       let rank = -1;
@@ -966,14 +978,12 @@ function getSearchMatches(input, limit = 8) {
       return {
         stock,
         rank,
-        preferred: preferredIds.has(stock.id) ? 0 : 1,
         labelLength: getDisplayLabel(stock).length
       };
     })
     .filter(Boolean)
     .sort((a, b) =>
       a.rank - b.rank ||
-      a.preferred - b.preferred ||
       a.labelLength - b.labelLength ||
       a.stock.symbol.localeCompare(b.stock.symbol)
     );
@@ -1595,7 +1605,7 @@ function renderSuggestions() {
   if (!stockSuggestions) {
     return;
   }
-  stockSuggestions.innerHTML = stockCatalog
+  stockSuggestions.innerHTML = getFilteredCatalog()
     .map((stock) => `<option value="${getDisplayLabel(stock)} (${stock.symbol})"></option>`)
     .join("");
 }
@@ -2120,7 +2130,8 @@ function findStockBySearchInput(input) {
     return null;
   }
 
-  const catalogs = [getFilteredCatalog(), stockCatalog];
+  const activeCatalog = getFilteredCatalog();
+  const catalogs = getActiveMarketFilter() === "ALL" ? [activeCatalog, stockCatalog] : [activeCatalog];
 
   for (const catalog of catalogs) {
     const exactMatch = catalog.find((stock) => getSearchCandidates(stock).includes(normalized));
@@ -2285,6 +2296,34 @@ async function fetchTwelveDataQuote(stock, apiKey) {
   };
 }
 
+async function fetchKisQuote(stock, proxyUrl) {
+  const code = getKisSymbolCode(stock);
+  if (!code) {
+    throw new Error("KIS는 6자리 한국 종목코드가 있는 종목만 지원합니다.");
+  }
+
+  const normalizedProxyUrl = (proxyUrl || readKisProxyUrl()).trim().replace(/\/+$/, "");
+  if (!normalizedProxyUrl) {
+    throw new Error("KIS 프록시 주소가 필요합니다.");
+  }
+
+  const response = await fetch(`${normalizedProxyUrl}/api/kis/quote?symbol=${encodeURIComponent(code)}`);
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok || !data?.ok) {
+    const message = data?.error || `KIS 프록시 응답 ${response.status}`;
+    throw new Error(message);
+  }
+
+  return {
+    price: Number(data.price),
+    currency: data.currency || "KRW",
+    changePercent: Number(data.changePercent ?? NaN),
+    timestamp: `${data.timestamp || "latest"} · KIS`,
+    sourceNote: data.sourceNote || "한국투자 Open API 현재가"
+  };
+}
+
 function syncStockRecord(stockId, patch) {
   const collections = [featuredStockCatalog, stockCatalog];
 
@@ -2365,6 +2404,35 @@ function formatNextRefreshTime(date) {
   }).format(date);
 }
 
+function updateProviderInputState() {
+  const provider = providerSelect?.value ?? "snapshot";
+  const apiKeyLabel = apiKeyInput?.closest("label") ?? null;
+  const proxyLabel = proxyUrlInput?.closest("label") ?? null;
+
+  if (apiKeyInput) {
+    if (provider === "alpha") {
+      apiKeyInput.placeholder = "Alpha Vantage API 키";
+    } else if (provider === "twelve") {
+      apiKeyInput.placeholder = "Twelve Data API 키";
+    } else {
+      apiKeyInput.placeholder = "이 공급자에서는 비워둡니다";
+    }
+    apiKeyInput.disabled = provider !== "alpha" && provider !== "twelve";
+  }
+
+  if (apiKeyLabel) {
+    apiKeyLabel.hidden = provider !== "alpha" && provider !== "twelve";
+  }
+
+  if (proxyUrlInput) {
+    proxyUrlInput.disabled = provider !== "kis";
+  }
+
+  if (proxyLabel) {
+    proxyLabel.hidden = provider !== "kis";
+  }
+}
+
 function renderAutoRefreshStatus(message = "") {
   if (!autoRefreshStatus) {
     return;
@@ -2382,7 +2450,9 @@ function renderAutoRefreshStatus(message = "") {
       ? "Stooq 실시간 시세"
       : provider === "alpha"
         ? "Alpha Vantage 실시간 시세"
-        : "Twelve Data 실시간 시세";
+        : provider === "twelve"
+          ? "Twelve Data 실시간 시세"
+          : "한국투자 Open API 시세";
 
   const nextText = autoRefreshNextAt ? `다음 예정 ${formatNextRefreshTime(autoRefreshNextAt)}` : "다음 예약 계산 중";
   setText(autoRefreshStatus, message || `자동 갱신 사용 중 · ${providerLabel} 기준 · ${nextText}`);
@@ -2402,6 +2472,41 @@ function readAutoRefreshPreference() {
   } catch {
     return false;
   }
+}
+
+function persistKisProxyUrl(value) {
+  try {
+    if (!value) {
+      window.localStorage.removeItem(KIS_PROXY_URL_KEY);
+      return;
+    }
+    window.localStorage.setItem(KIS_PROXY_URL_KEY, value);
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function readKisProxyUrl() {
+  try {
+    return window.localStorage.getItem(KIS_PROXY_URL_KEY) || "http://127.0.0.1:8766";
+  } catch {
+    return "http://127.0.0.1:8766";
+  }
+}
+
+function getKisSymbolCode(stock) {
+  const raw = stock.providerSymbols?.alpha
+    ?? stock.providerSymbols?.twelve
+    ?? stock.symbol
+    ?? stock.ticker
+    ?? "";
+
+  const matched = String(raw).match(/\d{6}/);
+  if (!matched) {
+    return "";
+  }
+
+  return matched[0];
 }
 
 async function runAutoRefreshCycle() {
@@ -2436,11 +2541,12 @@ function configureAutoRefresh() {
 }
 
 async function refreshLiveQuote(options = {}) {
-  if (!providerSelect || !apiKeyInput || !form) {
+  if (!providerSelect || !form) {
     return;
   }
   const provider = providerSelect.value;
   const apiKey = apiKeyInput.value.trim();
+  const proxyUrl = proxyUrlInput?.value.trim() || readKisProxyUrl();
   const currentStock = readFormStock();
 
   try {
@@ -2460,6 +2566,8 @@ async function refreshLiveQuote(options = {}) {
       quote = await fetchAlphaQuote(currentStock, apiKey);
     } else if (provider === "twelve") {
       quote = await fetchTwelveDataQuote(currentStock, apiKey);
+    } else if (provider === "kis") {
+      quote = await fetchKisQuote(currentStock, proxyUrl);
     } else {
       throw new Error("지원하지 않는 공급자입니다.");
     }
@@ -2471,7 +2579,7 @@ async function refreshLiveQuote(options = {}) {
       currency: quote.currency,
       sourceDate: new Date().toISOString().slice(0, 10),
       sourceLabel: `${provider.toUpperCase()} live quote`,
-      sourceNote: `${provider} 공급자로 현재가를 갱신했습니다.`
+      sourceNote: quote.sourceNote || `${provider} 공급자로 현재가를 갱신했습니다.`
     });
     updateQuoteBanner(currentStock, quote);
     renderSourceMeta(readFormStock());
@@ -2491,7 +2599,14 @@ async function refreshLiveQuote(options = {}) {
 if (providerSelect) {
   providerSelect.addEventListener("change", () => {
     setText(providerHelp, providerHelpText[providerSelect.value]);
+    updateProviderInputState();
     renderAutoRefreshStatus();
+  });
+}
+
+if (proxyUrlInput) {
+  proxyUrlInput.addEventListener("change", () => {
+    persistKisProxyUrl(proxyUrlInput.value.trim());
   });
 }
 
@@ -2641,7 +2756,11 @@ renderMatchSummary();
 renderSuggestions();
 renderSearchResults("");
 renderUniverse();
-setText(providerHelp, providerHelpText.snapshot);
+if (proxyUrlInput) {
+  proxyUrlInput.value = readKisProxyUrl();
+}
+setText(providerHelp, providerHelpText[providerSelect?.value || "snapshot"]);
+updateProviderInputState();
 loadStockIntoWorkbench(featuredStockCatalog[0]);
 renderAutoRefreshStatus();
 configureAutoRefresh();
