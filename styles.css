@@ -1133,8 +1133,56 @@ main,
 
 .result-panel {
   display: grid;
-  grid-template-columns: 160px 1fr;
   gap: 24px;
+}
+
+.result-main {
+  display: grid;
+  gap: 20px;
+}
+
+.result-summary {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.summary-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.inline-brief-section {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-base);
+  box-shadow: var(--shadow-soft);
+}
+
+.inline-brief-head {
+  display: grid;
+  gap: 8px;
+}
+
+.inline-brief-head h4 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+.inline-brief-head p:last-child {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.inline-financial-shell {
+  margin-top: 0;
 }
 
 .recent-shell {
@@ -1584,7 +1632,7 @@ summary:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .result-panel {
+  .result-summary {
     grid-template-columns: 1fr;
   }
 
@@ -1660,6 +1708,10 @@ summary:focus-visible {
   .search-result-meta {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .inline-brief-section {
+    padding: 18px;
   }
 }
 

@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quant Signal Desk</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -18,20 +16,23 @@
         <p class="eyebrow">LIVE EQUITY RESEARCH WORKBENCH</p>
         <h1>Quant Signal Desk</h1>
       </div>
-      <a class="nav-cta" href="#workbench">실제 종목 분석</a>
+      <div class="hero-nav">
+        <a class="nav-cta" href="#workbench">핵심 분석</a>
+        <a class="nav-cta ghost" href="#comparison">비교표</a>
+      </div>
     </nav>
 
     <section class="hero-grid">
       <div class="hero-copy">
-        <p class="hero-kicker">샘플 데모에서 실제 종목 대응형으로 업데이트</p>
-        <h2>한국과 미국 종목을 검색하고, 스냅샷과 실시간 가격을 함께 보는 퀀트 매수 보조 앱</h2>
+        <p class="hero-kicker">실전형 검색 + 퀀트 진단 + 리서치 브리프</p>
+        <h2>검색, 점수, 브리프, 비교표만 먼저 보이게 정리한 투자 워크벤치</h2>
         <p class="hero-body">
-          기본 비교표는 실제 상장 종목으로 채웠고, 종목 검색과 티커 선택이 가능하며,
-          브라우저에서 호출 가능한 데이터 공급자를 연결해 가격 갱신까지 할 수 있게 구성했습니다.
+          가장 자주 쓰는 흐름인 종목 검색, 퀀트 진단, 리서치 브리프, 비교표를 우선 배치했습니다.
+          보조 모듈은 아래에서 접어 열 수 있게 정리해 화면 피로를 줄였습니다.
         </p>
         <div class="hero-actions">
-          <a class="button solid" href="#actual-universe">실제 종목 보기</a>
-          <a class="button ghost" href="#provider-lab">실시간 연결 설정</a>
+          <a class="button solid" href="#workbench">바로 분석 시작</a>
+          <a class="button ghost" href="#actual-universe">프리셋 보기</a>
         </div>
       </div>
 
@@ -59,111 +60,157 @@
   </header>
 
   <main>
-    <section class="strip">
+    <section class="strip compact-strip">
       <article>
-        <span>Real Names</span>
-        <strong>실제 상장 종목 프리셋</strong>
+        <span>1</span>
+        <strong>검색하고 불러오기</strong>
       </article>
       <article>
-        <span>Search</span>
-        <strong>티커와 회사명 검색</strong>
+        <span>2</span>
+        <strong>퀀트 점수 확인</strong>
       </article>
       <article>
-        <span>Live Quote</span>
-        <strong>실시간 가격 갱신 연결</strong>
+        <span>3</span>
+        <strong>리서치 브리프 읽기</strong>
       </article>
       <article>
-        <span>Quant View</span>
-        <strong>팩터 점수와 리스크 규율</strong>
+        <span>4</span>
+        <strong>비교표로 상대평가</strong>
       </article>
     </section>
 
-    <section class="section" id="actual-universe">
-      <div class="section-heading">
-        <p class="eyebrow">ACTUAL UNIVERSE</p>
-        <h3>실제 종목 프리셋</h3>
-        <p>대표 종목을 바로 불러와 워크벤치에 넣을 수 있습니다. 한국 종목은 2026년 5월 11일 기준 스냅샷, 미국 종목은 현재가 갱신을 지원하도록 설계했습니다.</p>
-        <p class="section-meta" id="marketCoverage"></p>
-      </div>
-      <div class="preset-grid" id="presetGrid"></div>
-    </section>
-
-    <section class="section" id="ipo-watch">
-      <div class="section-heading">
-        <p class="eyebrow">IPO / PRIVATE WATCH</p>
-        <h3>곧 상장할 주식과 SpaceX 같은 비상장 대기종목</h3>
-        <p>상장 임박 종목, 비상장 대형주, 그리고 관련 공개 수혜주와 뉴스를 한 칸에서 같이 보도록 만들었습니다.</p>
-        <p class="section-meta" id="ipoSectionMeta"></p>
-      </div>
-      <div class="ipo-watch-shell">
-        <div class="ipo-watch-grid" id="ipoWatchGrid"></div>
-        <div class="ipo-news-feed" id="ipoNewsFeed"></div>
-      </div>
-    </section>
-
-    <section class="section" id="investing-capture">
-      <div class="section-heading">
-        <p class="eyebrow">INVESTING CAPTURE</p>
-        <h3>Investing.com 반영 상태</h3>
-        <p>공개 `markets` 페이지에서 확인 가능한 시그널과, `ProPicks Top Value Stocks` 경로에서 구조만 확인된 항목을 분리해서 기록했습니다.</p>
-      </div>
-      <div class="capture-grid" id="investingCaptureGrid"></div>
-    </section>
-
-    <section class="section" id="propicks-live">
-      <div class="section-heading">
-        <p class="eyebrow">PROPICKS LIVE</p>
-        <h3>실제 ProPicks 캡처</h3>
-        <p>2026년 5월 12일 로그인 세션에서 확인한 `Top Value Stocks / US20` 전략 정보를 앱에 반영했습니다. 현재 편입 20종목 이름은 계정 권한상 마스킹되어 있었지만 전략 메타데이터와 성과 수치는 읽어올 수 있었습니다.</p>
-      </div>
-      <div class="propicks-grid">
-        <article class="propicks-panel" id="propicksSummary"></article>
-        <article class="propicks-panel" id="propicksWinners"></article>
-      </div>
-    </section>
-
-    <section class="section" id="etf-allocator">
-      <div class="section-heading">
-        <p class="eyebrow">ETF ALLOCATOR</p>
-        <h3>ETF 구성 예시</h3>
-        <p>개별 종목 집중 리스크를 낮추기 위한 ETF 모델 구성을 함께 보여줍니다. 미국 중심과 한국 혼합형을 한 화면에서 비교할 수 있게 했습니다.</p>
-      </div>
-      <div class="etf-grid" id="etfGrid"></div>
-    </section>
-
-    <section class="section provider-lab" id="provider-lab">
-      <div class="section-heading">
-        <p class="eyebrow">PROVIDER LAB</p>
-        <h3>실시간 연결 설정</h3>
-        <p>정적 파일에서도 동작하도록 브라우저 호출이 가능한 공급자만 연결했습니다. 미국 종목은 무키 Stooq, 글로벌/한국 종목은 API 키 기반 Alpha Vantage 또는 Twelve Data를 사용할 수 있습니다.</p>
-      </div>
-
-      <div class="provider-grid">
-        <article class="provider-card">
-          <h4>실시간 공급자</h4>
-          <label>
-            Provider
-            <select id="providerSelect">
-              <option value="snapshot">Snapshot only</option>
-              <option value="stooq">Stooq (US, no key)</option>
-              <option value="alpha">Alpha Vantage (API key)</option>
-              <option value="twelve">Twelve Data (API key)</option>
-            </select>
-          </label>
-          <label>
-            API Key
-            <input id="apiKeyInput" type="password" placeholder="필요한 공급자만 입력">
-          </label>
-          <p class="provider-help" id="providerHelp"></p>
-        </article>
-
-        <article class="provider-card provider-source">
-          <h4>현재 선택 종목 데이터 메모</h4>
-          <div id="sourceMeta">
-            <p>종목을 선택하면 스냅샷 출처와 마지막 반영 시점을 보여줍니다.</p>
+    <section class="section utility-section" id="actual-universe">
+      <details class="section-fold" open>
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">ACTUAL UNIVERSE</p>
+            <h3>실제 종목 프리셋</h3>
           </div>
-        </article>
-      </div>
+          <span class="fold-chip">자주 쓰는 보조 패널</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>대표 종목을 바로 불러와 워크벤치에 넣을 수 있습니다. 한국 종목은 2026년 5월 11일 기준 스냅샷, 미국 종목은 현재가 갱신을 지원하도록 설계했습니다.</p>
+          <p class="section-meta" id="marketCoverage"></p>
+          <div class="preset-grid" id="presetGrid"></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section utility-section" id="ipo-watch">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">IPO / PRIVATE WATCH</p>
+            <h3>상장 예정 / 비상장 테마</h3>
+          </div>
+          <span class="fold-chip">필요할 때만 열기</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>상장 임박 종목, 비상장 대형주, 그리고 관련 공개 수혜주와 뉴스를 한 칸에서 같이 보도록 만들었습니다.</p>
+          <p class="section-meta" id="ipoSectionMeta"></p>
+          <div class="ipo-watch-shell">
+            <div class="ipo-watch-grid" id="ipoWatchGrid"></div>
+            <div class="ipo-news-feed" id="ipoNewsFeed"></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section utility-section" id="investing-capture">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">INVESTING CAPTURE</p>
+            <h3>Investing 반영 메모</h3>
+          </div>
+          <span class="fold-chip">보조 참고</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>공개 `markets` 페이지에서 확인 가능한 시그널과, `ProPicks Top Value Stocks` 경로에서 구조만 확인된 항목을 분리해서 기록했습니다.</p>
+          <div class="capture-grid" id="investingCaptureGrid"></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section utility-section" id="propicks-live">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">PROPICKS LIVE</p>
+            <h3>ProPicks 캡처</h3>
+          </div>
+          <span class="fold-chip">보조 참고</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>2026년 5월 12일 로그인 세션에서 확인한 `Top Value Stocks / US20` 전략 정보를 앱에 반영했습니다. 현재 편입 20종목 이름은 계정 권한상 마스킹되어 있었지만 전략 메타데이터와 성과 수치는 읽어올 수 있었습니다.</p>
+          <div class="propicks-grid">
+            <article class="propicks-panel" id="propicksSummary"></article>
+            <article class="propicks-panel" id="propicksWinners"></article>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section utility-section" id="etf-allocator">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">ETF ALLOCATOR</p>
+            <h3>ETF 구성 예시</h3>
+          </div>
+          <span class="fold-chip">분산 참고</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>개별 종목 집중 리스크를 낮추기 위한 ETF 모델 구성을 함께 보여줍니다. 미국 중심과 한국 혼합형을 한 화면에서 비교할 수 있게 했습니다.</p>
+          <div class="etf-grid" id="etfGrid"></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section utility-section provider-lab" id="provider-lab">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">PROVIDER LAB</p>
+            <h3>실시간 연결 설정</h3>
+          </div>
+          <span class="fold-chip">고급 설정</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>정적 파일에서도 동작하도록 기본은 브라우저 호출 공급자를 쓰고, 한국투자 Open API는 비밀키 보호를 위해 로컬 프록시 방식으로 연결했습니다. 미국 종목은 무키 Stooq, 글로벌/한국 종목은 Alpha Vantage, Twelve Data, KIS 프록시를 사용할 수 있습니다.</p>
+          <div class="provider-grid">
+            <article class="provider-card">
+              <h4>실시간 공급자</h4>
+              <label>
+                Provider
+                <select id="providerSelect">
+                  <option value="snapshot">Snapshot only</option>
+                  <option value="stooq">Stooq (US, no key)</option>
+                  <option value="alpha">Alpha Vantage (API key)</option>
+                  <option value="twelve">Twelve Data (API key)</option>
+                  <option value="kis">Korea Investment Open API (local proxy)</option>
+                </select>
+              </label>
+              <label>
+                API Key
+                <input id="apiKeyInput" type="password" placeholder="필요한 공급자만 입력">
+              </label>
+              <label>
+                Proxy URL
+                <input id="proxyUrlInput" type="url" placeholder="KIS 프록시 주소 예: http://127.0.0.1:8766">
+              </label>
+              <p class="provider-help" id="providerHelp"></p>
+            </article>
+
+            <article class="provider-card provider-source">
+              <h4>현재 선택 종목 데이터 메모</h4>
+              <div id="sourceMeta">
+                <p>종목을 선택하면 스냅샷 출처와 마지막 반영 시점을 보여줍니다.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </details>
     </section>
 
     <section class="section" id="workbench">
@@ -218,7 +265,7 @@
             <button class="button solid" type="button" id="loadStockButton">이 종목 분석하기</button>
             <button class="button ghost" type="button" id="clearSearchButton">다시 찾기</button>
             <button class="button ghost" type="button" id="refreshQuoteButton">가격만 새로고침</button>
-            <button class="button ghost" type="button" id="fullReviewButton">자세히 보기</button>
+            <button class="button ghost" type="button" id="fullReviewButton">브리프로 이동</button>
           </div>
           <div class="auto-refresh-shell">
             <label class="auto-refresh-toggle" for="autoRefreshToggle">
@@ -229,7 +276,7 @@
             <p class="section-meta">`snapshot` 공급자는 저장된 스냅샷과 GitHub 갱신본을 다시 읽고, 실시간 공급자를 고르면 현재 선택 종목 가격을 1시간마다 갱신합니다.</p>
           </div>
           <details class="advanced-shell" id="advancedShell">
-            <summary>고급 설정 열기</summary>
+            <summary>수치 직접 수정하기</summary>
             <div class="advanced-grid">
               <label>
                 종목명
@@ -281,47 +328,51 @@
         </form>
 
         <div class="result-panel">
-          <div class="score-ring">
-            <svg viewBox="0 0 120 120">
-              <circle class="ring-bg" cx="60" cy="60" r="48"></circle>
-              <circle class="ring-value" id="ringValue" cx="60" cy="60" r="48"></circle>
-            </svg>
-            <div class="ring-center">
-              <strong id="totalScore">0</strong>
-              <span>총점</span>
+          <div class="result-main">
+            <div class="result-summary">
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                  <circle class="ring-bg" cx="60" cy="60" r="48"></circle>
+                  <circle class="ring-value" id="ringValue" cx="60" cy="60" r="48"></circle>
+                </svg>
+                <div class="ring-center">
+                  <strong id="totalScore">0</strong>
+                  <span>총점</span>
+                </div>
+              </div>
+
+              <div class="summary-stack">
+                <div class="simple-status" id="simpleStatus"></div>
+                <div class="factor-grid" id="factorGrid"></div>
+                <div class="quote-banner">
+                  <div>
+                    <p class="eyebrow">LIVE STATUS</p>
+                    <strong id="quotePrice">-</strong>
+                  </div>
+                  <div>
+                    <span id="quoteChange">변동 정보 없음</span>
+                    <small id="quoteTimestamp">실시간 갱신 전</small>
+                  </div>
+                </div>
+                <div class="stance-card">
+                  <p class="eyebrow">PRO DECISION</p>
+                  <h4 id="stanceTitle">분석 대기</h4>
+                  <p id="stanceBody">실제 종목을 선택하면 퀀트 스타일 점수와 투자 스탠스를 계산합니다.</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="result-summary">
-            <div class="simple-status" id="simpleStatus"></div>
-            <div class="factor-grid" id="factorGrid"></div>
-            <div class="quote-banner">
-              <div>
-                <p class="eyebrow">LIVE STATUS</p>
-                <strong id="quotePrice">-</strong>
-              </div>
-              <div>
-                <span id="quoteChange">변동 정보 없음</span>
-                <small id="quoteTimestamp">실시간 갱신 전</small>
-              </div>
+          <section class="inline-brief-section" id="financial-summary">
+            <div class="inline-brief-head">
+              <p class="eyebrow">FINANCIAL SUMMARY</p>
+              <h4>종목 리서치 브리프</h4>
+              <p>선택한 종목의 핵심 논리, 경고 신호, 체크리스트를 바로 아래에서 함께 읽습니다.</p>
             </div>
-            <div class="stance-card">
-              <p class="eyebrow">PRO DECISION</p>
-              <h4 id="stanceTitle">분석 대기</h4>
-              <p id="stanceBody">실제 종목을 선택하면 퀀트 스타일 점수와 투자 스탠스를 계산합니다.</p>
-            </div>
-          </div>
+            <div class="financial-shell inline-financial-shell" id="financialSummaryShell"></div>
+          </section>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="financial-summary">
-      <div class="section-heading">
-        <p class="eyebrow">FINANCIAL SUMMARY</p>
-        <h3>종목 리서치 브리프</h3>
-        <p>단순 수치 나열이 아니라, 선택한 종목의 데이터 완성도, 핵심 논리, 경고 신호, 체크리스트까지 한 번에 읽을 수 있게 구성했습니다.</p>
-      </div>
-      <div class="financial-shell" id="financialSummaryShell"></div>
     </section>
 
     <section class="section section-dark" id="comparison">
@@ -379,46 +430,58 @@
       </div>
     </section>
 
-    <section class="section" id="playbook">
-      <div class="section-heading">
-        <p class="eyebrow">PLAYBOOK</p>
-        <h3>실전 사용 메모</h3>
-        <p>이번 업데이트 이후 앱을 해석할 때 함께 기억해야 할 운영 규칙입니다.</p>
-      </div>
-
-      <div class="playbook-grid">
-        <article>
-          <span>01</span>
-          <h4>실시간 가격과 재무 스냅샷은 구분</h4>
-          <p>가격은 분 단위로 바뀌지만 ROE, PBR, FCF Yield는 분기 또는 일 단위 스냅샷입니다. 그래서 가격 갱신 뒤에도 재무 팩터가 즉시 같이 변하지는 않습니다.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h4>검색은 빠르게, 판단은 느리게</h4>
-          <p>이 앱은 종목 후보를 걸러내는 1차 워크벤치입니다. 점수가 높아도 실적 일정과 이벤트 리스크를 반드시 추가 확인해야 합니다.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h4>키 기반 공급자는 확장 여지</h4>
-          <p>Alpha Vantage와 Twelve Data를 연결해 두면 미국뿐 아니라 글로벌 심볼 대응 폭이 넓어집니다. 특히 한국 종목은 Twelve Data 쪽이 더 유연합니다.</p>
-        </article>
-      </div>
+    <section class="section utility-section" id="playbook">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">PLAYBOOK</p>
+            <h3>실전 사용 메모</h3>
+          </div>
+          <span class="fold-chip">운영 규칙</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>이번 업데이트 이후 앱을 해석할 때 함께 기억해야 할 운영 규칙입니다.</p>
+          <div class="playbook-grid">
+            <article>
+              <span>01</span>
+              <h4>실시간 가격과 재무 스냅샷은 구분</h4>
+              <p>가격은 분 단위로 바뀌지만 ROE, PBR, FCF Yield는 분기 또는 일 단위 스냅샷입니다. 그래서 가격 갱신 뒤에도 재무 팩터가 즉시 같이 변하지는 않습니다.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h4>검색은 빠르게, 판단은 느리게</h4>
+              <p>이 앱은 종목 후보를 걸러내는 1차 워크벤치입니다. 점수가 높아도 실적 일정과 이벤트 리스크를 반드시 추가 확인해야 합니다.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h4>키 기반 공급자는 확장 여지</h4>
+              <p>Alpha Vantage와 Twelve Data를 연결해 두면 미국뿐 아니라 글로벌 심볼 대응 폭이 넓어집니다. 특히 한국 종목은 Twelve Data 쪽이 더 유연합니다.</p>
+            </article>
+          </div>
+        </div>
+      </details>
     </section>
 
-    <section class="section" id="ops-suite">
-      <div class="section-heading">
-        <p class="eyebrow">OPS SUITE</p>
-        <h3>운영 확장 모듈</h3>
-        <p>리서치, 실시간 모니터링, 자동 전략, 포트폴리오 검증, 자동 보고까지 한 화면에서 이어서 보도록 구성한 운영 콘솔입니다.</p>
-      </div>
-
-      <div class="ops-grid" id="opsGrid">
-        <article class="ops-card" id="aiResearchCard"></article>
-        <article class="ops-card" id="marketWidgetCard"></article>
-        <article class="ops-card" id="strategyBotCard"></article>
-        <article class="ops-card" id="riskPortfolioCard"></article>
-        <article class="ops-card" id="automationCard"></article>
-      </div>
+    <section class="section utility-section" id="ops-suite">
+      <details class="section-fold">
+        <summary class="section-fold-summary">
+          <div>
+            <p class="eyebrow">OPS SUITE</p>
+            <h3>운영 확장 모듈</h3>
+          </div>
+          <span class="fold-chip">확장 화면</span>
+        </summary>
+        <div class="section-fold-body">
+          <p>리서치, 실시간 모니터링, 자동 전략, 포트폴리오 검증, 자동 보고까지 한 화면에서 이어서 보도록 구성한 운영 콘솔입니다.</p>
+          <div class="ops-grid" id="opsGrid">
+            <article class="ops-card" id="aiResearchCard"></article>
+            <article class="ops-card" id="marketWidgetCard"></article>
+            <article class="ops-card" id="strategyBotCard"></article>
+            <article class="ops-card" id="riskPortfolioCard"></article>
+            <article class="ops-card" id="automationCard"></article>
+          </div>
+        </div>
+      </details>
     </section>
   </main>
 
