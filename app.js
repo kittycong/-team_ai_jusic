@@ -813,6 +813,9 @@ const marketWidgetCard = document.querySelector("#marketWidgetCard");
 const strategyBotCard = document.querySelector("#strategyBotCard");
 const riskPortfolioCard = document.querySelector("#riskPortfolioCard");
 const automationCard = document.querySelector("#automationCard");
+const decisionFlowCandidates = document.querySelector("#decisionFlowCandidates");
+const decisionFlowSummary = document.querySelector("#decisionFlowSummary");
+const decisionFlowAction = document.querySelector("#decisionFlowAction");
 
 const RECENT_SELECTIONS_KEY = "quant-signal-desk-recent";
 const AUTO_REFRESH_KEY = "quant-signal-desk-auto-refresh";
@@ -1253,6 +1256,67 @@ function getStance(total) {
   };
 }
 
+function getPrimaryStrength(result) {
+  return Object.entries(result.factors)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] || "momentum";
+}
+
+function getPrimaryWeakness(result) {
+  return Object.entries(result.factors)
+    .sort((a, b) => a[1] - b[1])[0]?.[0] || "risk";
+}
+
+function getFactorDisplayName(key) {
+  return {
+    momentum: "모멘텀",
+    quality: "퀄리티",
+    value: "밸류",
+    risk: "리스크"
+  }[key] || key;
+}
+
+function getDecisionLabel(stock, result) {
+  const gaps = buildDataGaps(stock).length;
+  if (result.total >= 80 && gaps <= 3) {
+    return {
+      grade: "good",
+      title: "Buy Candidate",
+      body: "현재 데이터 기준으로 상위권 후보입니다. 다만 첫 진입은 분할로 관리하는 편이 좋습니다."
+    };
+  }
+
+  if (result.total >= 65) {
+    return {
+      grade: "watch",
+      title: "Hold / Watch",
+      body: "점수는 괜찮지만 가격대, 실적 일정, 데이터 공백 중 하나를 더 확인하고 들어가는 쪽이 유리합니다."
+    };
+  }
+
+  return {
+    grade: "caution",
+    title: "Reduce Risk",
+    body: "당장 매수보다 관찰 또는 교체 비교가 우선입니다. 약한 팩터가 개선되는지 먼저 확인해야 합니다."
+  };
+}
+
+function getPositionGuide(stock, result) {
+  if (result.factors.risk >= 75 && result.total >= 80) {
+    return "첫 진입 30~40% 이내, 눌림과 실적 확인을 나눠서 채우는 방식이 적합합니다.";
+  }
+  if (result.total >= 65) {
+    return "시험 비중으로 작게 접근하고, 실적 확인 뒤 늘리는 보수적 접근이 더 적합합니다.";
+  }
+  return "신규 진입보다 감시목록 유지가 적합합니다. 이미 보유 중이면 비중 상한부터 다시 점검하는 편이 좋습니다.";
+}
+
+function getDecisionUniverse() {
+  return getFilteredCatalog()
+    .map((stock) => ({ stock, result: evaluateStock(stock), coverage: getCoverageModel(stock) }))
+    .filter((entry) => countAvailableMetrics(entry.stock) >= 3)
+    .sort((a, b) => b.result.total - a.result.total);
+}
+
 function updateRing(score) {
   if (!ringValue) {
     return;
@@ -1314,6 +1378,152 @@ function renderFactorGrid(factors) {
     .join("");
 }
 
+function renderDecisionFlowCandidates() {
+  if (!decisionFlowCandidates) {
+    return;
+  }
+
+  const universe = getDecisionUniverse();
+  if (!universe.length) {
+    decisionFlowCandidates.innerHTML = `
+      <section class="candidate-board">
+        <h5>후보를 만들 수 없습니다</h5>
+        <p>현재 시장 필터 안에서 퀀트 계산이 가능한 종목이 충분하지 않습니다. 시장을 넓히거나 대표 프리셋 종목을 먼저 불러와 주세요.</p>
+      </section>
+    `;
+    return;
+  }
+
+  const boards = [
+    {
+      title: "상위 퀀트 후보",
+      body: "총점 기준으로 지금 가장 먼저 검토할 후보입니다.",
+      items: universe.slice(0, 5),
+      scoreKey: "total"
+    },
+    {
+      title: "밸류 우선 후보",
+      body: "가격 부담이 낮은 쪽을 먼저 보는 후보군입니다.",
+      items: [...universe].sort((a, b) => b.result.factors.value - a.result.factors.value).slice(0, 5),
+      scoreKey: "value"
+    },
+    {
+      title: "퀄리티 우선 후보",
+      body: "체력과 재무안정성을 더 중시해서 볼 후보군입니다.",
+      items: [...universe].sort((a, b) => b.result.factors.quality - a.result.factors.quality).slice(0, 5),
+      scoreKey: "quality"
+    }
+  ];
+
+  decisionFlowCandidates.innerHTML = boards
+    .map((board) => `
+      <section class="candidate-board">
+        <h5>${board.title}</h5>
+        <p>${board.body}</p>
+        <div class="candidate-board-list">
+          ${board.items.map(({ stock, result }) => `
+            <button type="button" class="candidate-pick" data-decision-stock-id="${stock.id}">
+              <div>
+                <strong>${getDisplayLabel(stock)}</strong>
+                <small>${stock.symbol} · ${stock.market} · ${getFactorDisplayName(getPrimaryStrength(result))} 강점</small>
+              </div>
+              <span class="candidate-score">${board.scoreKey === "total" ? result.total : result.factors[board.scoreKey]}</span>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+    `)
+    .join("");
+
+  document.querySelectorAll("[data-decision-stock-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const stock = stockCatalog.find((item) => item.id === button.dataset.decisionStockId);
+      if (stock) {
+        loadStockIntoWorkbench(stock);
+        renderMatchSummary(`${getDisplayLabel(stock)} 종목을 후보발굴 보드에서 불러왔습니다.`);
+        window.location.hash = "workbench";
+      }
+    });
+  });
+}
+
+function renderDecisionFlowSummary(stock, result) {
+  if (!decisionFlowSummary) {
+    return;
+  }
+
+  const coverage = getCoverageModel(stock);
+  const primaryStrength = getFactorDisplayName(getPrimaryStrength(result));
+  const primaryWeakness = getFactorDisplayName(getPrimaryWeakness(result));
+  const dataGaps = buildDataGaps(stock);
+
+  decisionFlowSummary.innerHTML = `
+    <div class="decision-summary-block">
+      <section class="decision-score-hero">
+        <span>${getDisplayLabel(stock)} · ${stock.symbol}</span>
+        <strong>${result.total}점</strong>
+        <p>${coverage.label} · ${getMarketFilterLabel(getActiveMarketFilter())} 기준 분석 대상</p>
+      </section>
+      <section class="decision-risk-panel">
+        <h5>지금 읽는 핵심</h5>
+        <div class="decision-kv-grid">
+          <div class="decision-kv">
+            <span>가장 강한 축</span>
+            <strong>${primaryStrength}</strong>
+          </div>
+          <div class="decision-kv">
+            <span>가장 약한 축</span>
+            <strong>${primaryWeakness}</strong>
+          </div>
+          <div class="decision-kv">
+            <span>데이터 공백</span>
+            <strong>${dataGaps.length ? `${dataGaps.length}개` : "거의 없음"}</strong>
+          </div>
+          <div class="decision-kv">
+            <span>현재 스탠스</span>
+            <strong>${getStance(result.total).title}</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderDecisionFlowAction(stock, result) {
+  if (!decisionFlowAction) {
+    return;
+  }
+
+  const label = getDecisionLabel(stock, result);
+  const checklist = buildDecisionChecklist(stock, result).slice(0, 3);
+  const riskFlags = buildRiskFlags(stock, result).slice(0, 3);
+
+  decisionFlowAction.innerHTML = `
+    <div class="decision-action-block">
+      <section class="decision-rule-panel">
+        <span class="decision-grade ${label.grade}">${label.title}</span>
+        <p>${label.body}</p>
+      </section>
+      <section class="decision-rule-panel">
+        <h5>권장 접근 방식</h5>
+        <p>${getPositionGuide(stock, result)}</p>
+      </section>
+      <section class="decision-rule-panel">
+        <h5>매수 전 마지막 확인</h5>
+        <div class="decision-bullet-list">
+          ${checklist.map((item) => `<p>${item}</p>`).join("")}
+        </div>
+      </section>
+      <section class="decision-rule-panel">
+        <h5>바로 보류해야 하는 신호</h5>
+        <div class="decision-bullet-list">
+          ${riskFlags.map((item) => `<p>${item}</p>`).join("")}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
 function renderSourceMeta(stock) {
   if (!sourceMeta) {
     return;
@@ -1357,6 +1567,9 @@ function renderEvaluation(stockInput) {
   renderIpoWatchSection(stockInput);
   renderFinancialSummary(stockInput, result, stance);
   renderOpsSuite(stockInput, result);
+  renderDecisionFlowCandidates();
+  renderDecisionFlowSummary(stockInput, result);
+  renderDecisionFlowAction(stockInput, result);
 }
 
 function buildFinancialSummary(stock, result, stance) {
@@ -2610,11 +2823,14 @@ if (proxyUrlInput) {
   });
 }
 
-  if (marketFilter) {
+if (marketFilter) {
   marketFilter.addEventListener("change", () => {
     renderSuggestions();
     renderSearchResults(stockSearch?.value ?? "");
     renderUniverse();
+    renderDecisionFlowCandidates();
+    renderDecisionFlowSummary(selectedStock, evaluateStock(selectedStock));
+    renderDecisionFlowAction(selectedStock, evaluateStock(selectedStock));
     renderMatchSummary(`${getMarketFilterLabel(getActiveMarketFilter())} 기준으로 검색 대상을 바꿨습니다.`);
   });
 }

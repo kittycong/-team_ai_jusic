@@ -220,6 +220,42 @@
         <p>검색으로 종목을 고르고, 필요하면 실시간 가격을 새로고침한 뒤 퀀트 점수와 투자 스탠스를 계산합니다.</p>
       </div>
 
+      <div class="decision-desk">
+        <article class="decision-card">
+          <div class="decision-card-head">
+            <div>
+              <p class="eyebrow">STEP 1</p>
+              <h4>후보 발굴 보드</h4>
+            </div>
+            <span class="decision-chip">실데이터 스냅샷 기반</span>
+          </div>
+          <p class="decision-body-copy">현재 선택한 시장 필터 기준으로, 실제 종목 마스터와 연결된 후보 중 먼저 볼 만한 종목을 추려줍니다.</p>
+          <div class="candidate-board-grid" id="decisionFlowCandidates"></div>
+        </article>
+
+        <article class="decision-card">
+          <div class="decision-card-head">
+            <div>
+              <p class="eyebrow">STEP 2</p>
+              <h4>진단 스냅샷</h4>
+            </div>
+            <span class="decision-chip">현재 선택 종목</span>
+          </div>
+          <div id="decisionFlowSummary"></div>
+        </article>
+
+        <article class="decision-card">
+          <div class="decision-card-head">
+            <div>
+              <p class="eyebrow">STEP 3</p>
+              <h4>결정 보조</h4>
+            </div>
+            <span class="decision-chip">매수 전 규칙</span>
+          </div>
+          <div id="decisionFlowAction"></div>
+        </article>
+      </div>
+
       <div class="workbench">
         <form class="input-panel" id="stock-form">
           <section class="simple-guide" id="simpleGuide">
