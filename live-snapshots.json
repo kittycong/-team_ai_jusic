@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-04T12:09:50.702Z",
+  "updatedAt": "2026-06-04T16:26:23.778Z",
   "provider": "stooq+existing",
   "quotes": {
     "005930:KRX": {
@@ -17,28 +17,28 @@
       "sourceNote": "초기 로컬 스냅샷입니다. GitHub Actions 또는 수동 갱신으로 업데이트할 수 있습니다."
     },
     "AAPL": {
-      "price": 310.26,
+      "price": 310.8858,
       "currency": "USD",
       "sourceDate": "2026-06-04",
       "sourceLabel": "GitHub Actions / Stooq",
       "sourceNote": "GitHub Actions에서 2026-06-04 기준으로 공개 시세를 반영했습니다."
     },
     "MSFT": {
-      "price": 427.34,
+      "price": 429.66,
       "currency": "USD",
       "sourceDate": "2026-06-04",
       "sourceLabel": "GitHub Actions / Stooq",
       "sourceNote": "GitHub Actions에서 2026-06-04 기준으로 공개 시세를 반영했습니다."
     },
     "NVDA": {
-      "price": 214.75,
+      "price": 217.445,
       "currency": "USD",
       "sourceDate": "2026-06-04",
       "sourceLabel": "GitHub Actions / Stooq",
       "sourceNote": "GitHub Actions에서 2026-06-04 기준으로 공개 시세를 반영했습니다."
     },
     "GOOGL": {
-      "price": 358.99,
+      "price": 371.93,
       "currency": "USD",
       "sourceDate": "2026-06-04",
       "sourceLabel": "GitHub Actions / Stooq",
