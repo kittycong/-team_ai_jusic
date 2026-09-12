@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-12T13:59:17.763Z",
+  "updatedAt": "2026-09-12T16:55:35.289Z",
   "provider": "stooq+existing",
   "quotes": {
     "005930:KRX": {
@@ -19,30 +19,30 @@
     "AAPL": {
       "price": null,
       "currency": "USD",
-      "sourceDate": "2026-06-08",
+      "sourceDate": "2026-09-12",
       "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-06-08 기준으로 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
     },
     "MSFT": {
       "price": null,
       "currency": "USD",
-      "sourceDate": "2026-06-08",
+      "sourceDate": "2026-09-12",
       "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-06-08 기준으로 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
     },
     "NVDA": {
       "price": null,
       "currency": "USD",
-      "sourceDate": "2026-06-08",
+      "sourceDate": "2026-09-12",
       "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-06-08 기준으로 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
     },
     "GOOGL": {
       "price": null,
       "currency": "USD",
-      "sourceDate": "2026-06-08",
+      "sourceDate": "2026-09-12",
       "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-06-08 기준으로 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
     }
   }
 }
