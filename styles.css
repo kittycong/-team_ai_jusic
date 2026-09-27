@@ -1,20 +1,24 @@
 :root {
-  --color-text-primary: #171719;
-  --color-text-secondary: #333333;
-  --color-text-tertiary: #6b6b6e;
-  --color-text-inverse: #979799;
-  --color-surface-base: #ffffff;
-  --color-surface-muted: #f7f7f5;
-  --color-surface-strong: #ffffff;
-  --color-border-default: #d9d9dc;
-  --color-border-strong: #171719;
-  --color-accent: #171719;
-  --color-accent-soft: rgba(23, 23, 25, 0.08);
+  --color-text-primary: #241f16;
+  --color-text-secondary: #4d4636;
+  --color-text-tertiary: #756c58;
+  --color-text-inverse: #ede3cd;
+  --color-surface-base: #fbf6ea;
+  --color-surface-muted: #f2e8d3;
+  --color-surface-strong: #fffdf7;
+  --color-border-default: #e2d6b8;
+  --color-border-strong: #241f16;
+  --color-accent: #241f16;
+  --color-accent-soft: rgba(36, 31, 22, 0.08);
+  --color-highlight: #a3672b;
+  --color-highlight-soft: rgba(163, 103, 43, 0.14);
   --color-danger: #b42318;
+  --color-danger-soft: rgba(180, 35, 24, 0.1);
   --color-success: #0f766e;
+  --color-success-soft: rgba(15, 118, 110, 0.12);
   --space-1: 4px;
   --radius-card: 20px;
-  --shadow-soft: 0 18px 40px rgba(23, 23, 25, 0.06);
+  --shadow-soft: 0 18px 40px rgba(94, 78, 42, 0.08);
   --font-family-primary: "Pretendard JP Variable", "Pretendard JP", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Hiragino Sans", "Apple SD Gothic Neo", "Meiryo", "Noto Sans JP", "Noto Sans KR", "Malgun Gothic", Osaka, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   --font-size-xs: 10px;
   --font-size-sm: 13px;
@@ -27,7 +31,7 @@
   --text: var(--color-text-primary);
   --muted: var(--color-text-tertiary);
   --accent: var(--color-accent);
-  --mint: var(--color-accent);
+  --mint: var(--color-highlight);
   --gold: var(--color-text-secondary);
   --line: var(--color-border-default);
   --line-strong: var(--color-border-strong);
@@ -48,8 +52,12 @@ body {
   color: var(--color-text-primary);
   background: var(--color-surface-base);
   font-size: var(--font-size-xl);
-  font-weight: 600;
-  line-height: 1.4;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, strong, .button, .nav-cta, .eyebrow, .quick-search-chip {
+  font-weight: 700;
 }
 
 .noise {
@@ -298,7 +306,7 @@ main,
 
 .section {
   padding: 56px clamp(20px, 4vw, 54px);
-  border-top: 1px solid rgba(127, 255, 83, 0.08);
+  border-top: 1px solid var(--color-border-default);
 }
 
 .section-dark {
@@ -1040,7 +1048,7 @@ main,
 
 .winner-card {
   padding: 16px 0;
-  border-bottom: 1px solid rgba(127, 255, 83, 0.08);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .winner-card:last-child {
@@ -1052,7 +1060,7 @@ main,
   margin-top: 6px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(127, 255, 83, 0.12);
+  background: var(--color-highlight-soft);
   color: var(--mint);
   font-weight: 700;
 }
@@ -1079,7 +1087,7 @@ main,
   justify-content: space-between;
   gap: 14px;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(127, 255, 83, 0.08);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .etf-row strong {
@@ -1132,7 +1140,7 @@ main,
   text-decoration: none;
   color: var(--text);
   border: 1px solid var(--line);
-  background: rgba(10, 19, 14, 0.88);
+  background: var(--color-surface-muted);
 }
 
 .preset-topline,
@@ -1450,7 +1458,7 @@ main,
   display: inline-flex;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(127, 255, 83, 0.12);
+  background: var(--color-highlight-soft);
   color: var(--mint);
   font-weight: 700;
   font-size: 0.78rem;
@@ -1462,8 +1470,8 @@ main,
   gap: 8px;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid rgba(127, 255, 83, 0.12);
-  background: rgba(6, 14, 10, 0.86);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-muted);
 }
 
 .auto-refresh-toggle {
@@ -1495,7 +1503,7 @@ main,
   padding: 10px 12px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: rgba(8, 16, 12, 0.88);
+  background: var(--color-surface-strong);
   cursor: pointer;
   font: inherit;
   color: var(--text);
@@ -1530,7 +1538,7 @@ main,
 }
 
 .ring-bg {
-  stroke: rgba(127, 255, 83, 0.08);
+  stroke: var(--color-border-default);
 }
 
 .ring-value {
@@ -1570,8 +1578,9 @@ main,
 .quote-banner {
   padding: 18px;
   border-radius: 20px;
-  background: rgba(8, 18, 13, 0.92);
-  border: 1px solid rgba(127, 255, 83, 0.1);
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-soft);
 }
 
 .factor-card strong,
@@ -1606,20 +1615,30 @@ main,
   justify-content: space-between;
   gap: 16px;
   align-items: end;
-  background: linear-gradient(180deg, rgba(255, 157, 0, 0.12), rgba(8, 18, 13, 0.95));
+  background: linear-gradient(180deg, var(--color-highlight-soft), var(--color-surface-strong) 60%);
 }
 
 .quote-banner strong {
   font-size: 2rem;
+  color: var(--color-text-primary);
 }
 
 .quote-banner span {
   display: block;
   font-weight: 700;
+  color: var(--color-text-primary);
 }
 
 .stance-card {
-  background: linear-gradient(180deg, rgba(127, 255, 83, 0.08), rgba(8, 18, 13, 0.96));
+  background: linear-gradient(180deg, var(--color-success-soft), var(--color-surface-strong) 65%);
+}
+
+.stance-card h4 {
+  color: var(--color-text-primary);
+}
+
+.stance-card p {
+  color: var(--color-text-secondary);
 }
 
 .comparison-grid {
@@ -1651,7 +1670,18 @@ main,
 
 .table-shell {
   overflow: auto;
-  background: rgba(4, 9, 7, 0.88);
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+}
+
+th {
+  color: var(--color-text-tertiary);
+  background: var(--color-surface-muted);
+}
+
+td {
+  color: var(--color-text-primary);
 }
 
 table {
@@ -1663,7 +1693,7 @@ th,
 td {
   padding: 14px 16px;
   text-align: left;
-  border-bottom: 1px solid rgba(127, 255, 83, 0.08);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .utility-section {
@@ -1674,13 +1704,13 @@ td {
 .section-fold {
   border: 1px solid var(--line);
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(8, 18, 13, 0.9), rgba(5, 10, 8, 0.86));
+  background: var(--color-surface-strong);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
 
 .section-fold[open] {
-  border-color: rgba(127, 255, 83, 0.24);
+  border-color: var(--color-highlight);
 }
 
 .section-fold-summary {
@@ -1710,7 +1740,7 @@ td {
 
 .section-fold-body {
   padding: 0 24px 24px;
-  border-top: 1px solid rgba(127, 255, 83, 0.08);
+  border-top: 1px solid var(--color-border-default);
 }
 
 .section-fold-body > p {
@@ -1723,7 +1753,7 @@ td {
   align-items: center;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(127, 255, 83, 0.18);
+  border: 1px solid var(--color-border-default);
   color: var(--mint);
   font-family: "Share Tech Mono", monospace;
   font-size: 0.78rem;
@@ -1736,7 +1766,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(127, 255, 83, 0.06);
+  background: var(--color-surface-muted);
 }
 
 .score-chip {
@@ -1910,262 +1940,6 @@ summary:focus-visible {
   }
 }
 
-/* Light mode stabilization for GitHub Pages */
-html,
-body {
-  background: #f5f7fa;
-  color: var(--color-text-primary);
-}
-
-body {
-  font-size: 17px;
-  line-height: 1.6;
-}
-
-.hero {
-  background:
-    radial-gradient(circle at top right, rgba(15, 111, 255, 0.08), transparent 28%),
-    linear-gradient(180deg, #fbfcfe 0%, #f3f6fa 100%);
-}
-
-.hero-copy,
-.hero-panel,
-.preset-button,
-.capture-card,
-.etf-card,
-.propicks-panel,
-.ipo-watch-card,
-.ipo-news-card,
-.financial-card,
-.ops-card,
-.provider-card,
-.input-panel,
-.result-panel,
-.table-shell,
-.playbook-grid article,
-.simple-guide,
-.simple-status,
-.advanced-shell,
-.factor-card,
-.stance-card,
-.quote-banner,
-.financial-panel,
-.ops-stat,
-.ops-mini,
-.propicks-metric,
-.candidate-board,
-.decision-score-hero,
-.decision-risk-panel,
-.decision-rule-panel,
-.section-fold,
-.search-result-button,
-.recent-pill,
-.ipo-comp,
-.auto-refresh-toggle {
-  background: #ffffff !important;
-  color: var(--color-text-primary) !important;
-  border-color: rgba(20, 28, 38, 0.1) !important;
-  box-shadow: 0 16px 32px rgba(15, 23, 32, 0.05) !important;
-}
-
-.section,
-.section-dark {
-  background: transparent !important;
-  color: var(--color-text-primary);
-  border-top: 1px solid rgba(20, 28, 38, 0.06);
-}
-
-.section-dark .section-heading p,
-.section-dark th,
-.section-dark td,
-.panel-note,
-.provider-help,
-.provider-source p,
-.hero-body,
-.section-heading p,
-.section-meta,
-.stance-card p,
-.playbook-grid p,
-.quote-banner span,
-.quote-banner small,
-.ipo-watch-stage,
-.ipo-watch-card p,
-.ipo-news-card p,
-.ipo-news-card small,
-.financial-copy p,
-.ops-copy p,
-.simple-guide-head span,
-.simple-steps p,
-.advanced-shell p,
-.search-result-meta,
-.search-result-summary,
-.table-headline small,
-.section-fold-body > p {
-  color: var(--color-text-secondary) !important;
-}
-
-.topbar h1,
-.hero-copy h2,
-.section-heading h3,
-.provider-card h4,
-.playbook-grid h4,
-.stance-card h4,
-.table-headline strong,
-.search-result-title,
-.search-result-button strong,
-.propicks-panel h4,
-.etf-card h4,
-.financial-card h4,
-.ops-card h4,
-.ipo-watch-card h4,
-.ipo-news-card h4,
-.ipo-news-card strong,
-.section-fold-summary h3 {
-  color: var(--color-text-primary) !important;
-}
-
-.eyebrow,
-.panel-label,
-.signal-stack span,
-.strip span,
-.playbook-grid span,
-.preset-meta,
-.provider-help,
-.section-fold-summary .eyebrow,
-.table-headline small,
-.search-result-badge,
-.search-result-symbol,
-.source-label,
-.source-date,
-.quote-banner small,
-.ops-kicker,
-.financial-kicker {
-  color: var(--color-text-tertiary) !important;
-}
-
-.button.solid,
-.nav-cta.solid,
-.quick-search-chip,
-.ipo-comp.is-link,
-.chat-send {
-  background: #0f6fff !important;
-  color: #ffffff !important;
-  border-color: #0f6fff !important;
-}
-
-.button.ghost,
-.nav-cta,
-.nav-cta.ghost,
-.preset-button,
-.search-result-button,
-.quick-search-chip.ghost {
-  background: #ffffff !important;
-  color: var(--color-text-primary) !important;
-}
-
-.button.ghost,
-.nav-cta,
-.nav-cta.ghost,
-.search-result-button,
-.quick-search-chip,
-.provider-card label,
-.input-panel label {
-  border-color: rgba(20, 28, 38, 0.12) !important;
-}
-
-.input-panel input,
-.input-panel select,
-.provider-card input,
-.provider-card select,
-.chat-in {
-  background: #ffffff !important;
-  color: var(--color-text-primary) !important;
-  border-color: rgba(20, 28, 38, 0.14) !important;
-}
-
-.input-panel input::placeholder,
-.provider-card input::placeholder,
-.chat-in::placeholder {
-  color: #8a93a0 !important;
-}
-
-.table-shell,
-table,
-thead,
-tbody,
-tr,
-th,
-td {
-  background: transparent;
-  color: var(--color-text-primary);
-}
-
-th {
-  background: #f1f4f8 !important;
-  color: var(--color-text-secondary) !important;
-}
-
-td {
-  color: var(--color-text-primary) !important;
-}
-
-.section-fold-summary,
-.topbar,
-.quote-banner,
-.search-result-topline,
-.search-result-meta,
-.provider-grid,
-.hero-nav,
-.hero-actions,
-.inline-actions {
-  color: var(--color-text-primary);
-}
-
-.section-fold[open] {
-  border-color: rgba(15, 111, 255, 0.2) !important;
-}
-
-.section-fold-summary:hover,
-.search-result-button:hover,
-.preset-button:hover,
-.button:hover,
-.nav-cta:hover {
-  background: #f6f9fc !important;
-}
-
-.score-ring svg text,
-.score-label,
-.stance-chip,
-.status-chip,
-.fold-chip {
-  color: var(--color-text-primary) !important;
-}
-
-.fold-chip,
-.status-chip,
-.stance-chip,
-.search-result-badge {
-  background: rgba(15, 111, 255, 0.08) !important;
-  border-color: rgba(15, 111, 255, 0.12) !important;
-}
-
-.comparison-grid,
-.provider-grid,
-.decision-desk,
-.workbench,
-.preset-grid,
-.capture-grid,
-.etf-grid,
-.propicks-grid,
-.ipo-watch-shell,
-.ops-grid,
-.financial-grid,
-.candidate-board-grid,
-.decision-summary-block,
-.decision-action-block {
-  align-items: start;
-}
-
 @media (max-width: 720px) {
   body {
     font-size: 16px;
@@ -2199,5 +1973,325 @@ td {
   .nav-cta,
   .quick-search-chip {
     width: 100%;
+  }
+}
+
+/* ---------- Investment calendar ---------- */
+
+.calendar-briefing {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.calendar-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.calendar-stat {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border-default);
+}
+
+.calendar-stat-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: 6px;
+}
+
+.calendar-stat-value {
+  display: block;
+  font-family: "Oxanium", sans-serif;
+  font-size: 1.6rem;
+  color: var(--color-text-primary);
+}
+
+.calendar-stat-date {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-tertiary);
+}
+
+.calendar-briefing-news {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.calendar-briefing-news strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.calendar-briefing-news ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-briefing-news a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.calendar-briefing-news a:hover {
+  text-decoration: underline;
+}
+
+.calendar-briefing-news small {
+  display: block;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}
+
+.calendar-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.calendar-quarter-note {
+  grid-column: 1 / -1;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--color-highlight-soft);
+  border: 1px solid var(--color-border-default);
+}
+
+.calendar-quarter-note .eyebrow {
+  margin-bottom: 6px;
+}
+
+.calendar-quarter-note strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.calendar-quarter-note p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.calendar-month {
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calendar-month.is-current {
+  border-color: var(--color-highlight);
+  box-shadow: 0 0 0 1px var(--color-highlight);
+}
+
+.calendar-month-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-month-head strong {
+  font-family: "Oxanium", sans-serif;
+  font-size: 1.1rem;
+}
+
+.calendar-current-chip {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--color-highlight);
+  color: var(--color-surface-strong);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.calendar-event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calendar-event {
+  display: grid;
+  grid-template-columns: 44px auto 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.calendar-event-date {
+  font-family: "Share Tech Mono", monospace;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  padding-top: 2px;
+}
+
+.calendar-badge {
+  align-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cal-type-rate {
+  background: var(--color-highlight-soft);
+  color: var(--color-highlight);
+}
+
+.cal-type-indicator {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.cal-type-earnings {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+.calendar-event-body strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.calendar-event-body small {
+  display: block;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.calendar-event-empty {
+  grid-template-columns: 1fr;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+.calendar-news-section {
+  margin-top: 48px;
+}
+
+.calendar-news-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.calendar-news-column {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-strong);
+}
+
+.calendar-news-column h5 {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+}
+
+.calendar-news-column ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-item a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  display: block;
+}
+
+.news-item a:hover {
+  text-decoration: underline;
+}
+
+.news-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.news-item-meta small {
+  color: var(--color-text-tertiary);
+}
+
+.news-sentiment {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.news-sentiment-positive {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.news-sentiment-negative {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.news-sentiment-neutral {
+  background: var(--color-surface-muted);
+  color: var(--color-text-tertiary);
+}
+
+.calendar-news-empty {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .calendar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calendar-news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calendar-stat-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .calendar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-event {
+    grid-template-columns: 1fr;
   }
 }

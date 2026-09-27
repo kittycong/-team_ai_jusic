@@ -15,7 +15,11 @@ const featuredStocks = [
   { id: "AAPL", symbol: "AAPL", market: "NASDAQ", currency: "USD", yahoo: "AAPL", stooq: "aapl.us", twelve: "AAPL" },
   { id: "MSFT", symbol: "MSFT", market: "NASDAQ", currency: "USD", yahoo: "MSFT", stooq: "msft.us", twelve: "MSFT" },
   { id: "NVDA", symbol: "NVDA", market: "NASDAQ", currency: "USD", yahoo: "NVDA", stooq: "nvda.us", twelve: "NVDA" },
-  { id: "GOOGL", symbol: "GOOGL", market: "NASDAQ", currency: "USD", yahoo: "GOOGL", stooq: "googl.us", twelve: "GOOGL" }
+  { id: "GOOGL", symbol: "GOOGL", market: "NASDAQ", currency: "USD", yahoo: "GOOGL", stooq: "googl.us", twelve: "GOOGL" },
+  // Macro reference assets for the investment calendar's daily briefing panel.
+  { id: "USDKRW:FX", symbol: "USDKRW:FX", market: "MACRO", currency: "KRW", yahoo: "KRW=X", stooq: null, twelve: null },
+  { id: "WTI:CMDTY", symbol: "WTI:CMDTY", market: "MACRO", currency: "USD", yahoo: "CL=F", stooq: null, twelve: null },
+  { id: "BRENT:CMDTY", symbol: "BRENT:CMDTY", market: "MACRO", currency: "USD", yahoo: "BZ=F", stooq: null, twelve: null }
 ];
 
 function isValidPrice(value) {
@@ -131,7 +135,9 @@ async function tryFetch(fetcher, stock) {
 async function refreshStock(stock, existingQuote) {
   const fetchers = stock.market === "NASDAQ"
     ? [fetchYahooQuote, fetchStooqQuote, fetchTwelveQuote]
-    : [fetchTwelveQuote, fetchYahooQuote];
+    : stock.market === "MACRO"
+      ? [fetchYahooQuote]
+      : [fetchTwelveQuote, fetchYahooQuote];
 
   for (const fetcher of fetchers) {
     const quote = await tryFetch(fetcher, stock);

@@ -823,6 +823,28 @@ const LIVE_SNAPSHOT_URL = "./live-snapshots.json";
 const KIS_PROXY_URL_KEY = "quant.stock.kisProxyUrl";
 const AUTO_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
 const UNIVERSE_ROW_LIMIT = 30;
+const MACRO_CALENDAR_URL = "./data/macro-calendar-2026.json";
+const MARKET_NEWS_URL = "./market-news.json";
+const MACRO_QUOTE_META = {
+  "USDKRW:FX": { label: "원/달러 환율", unit: "KRW", decimals: 2 },
+  "WTI:CMDTY": { label: "WTI 원유", unit: "USD", decimals: 2 },
+  "BRENT:CMDTY": { label: "브렌트유", unit: "USD", decimals: 2 }
+};
+const CALENDAR_TYPE_META = {
+  rate: { label: "금리", className: "cal-type-rate" },
+  indicator: { label: "지표", className: "cal-type-indicator" },
+  earnings: { label: "실적", className: "cal-type-earnings" }
+};
+
+const calendarGrid = document.querySelector("#calendarGrid");
+const calendarBriefing = document.querySelector("#calendarBriefing");
+const calendarMeta = document.querySelector("#calendarMeta");
+const calendarNewsGrid = document.querySelector("#calendarNewsGrid");
+const calendarNewsMeta = document.querySelector("#calendarNewsMeta");
+
+let macroCalendarData = null;
+let macroQuotes = {};
+let marketNewsData = null;
 
 let autoRefreshTimer = null;
 let autoRefreshNextAt = null;
@@ -2563,6 +2585,271 @@ function rerenderAfterDataUpdate() {
   }
 }
 
+const MONTH_LABELS = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+const QUARTER_OF_MONTH_INDEX = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3];
+
+function formatMacroPrice(id, price) {
+  const meta = MACRO_QUOTE_META[id];
+  if (!meta || !Number.isFinite(price)) {
+    return "-";
+  }
+  const formatted = price.toLocaleString("ko-KR", {
+    minimumFractionDigits: meta.decimals,
+    maximumFractionDigits: meta.decimals
+  });
+  return meta.unit === "KRW" ? `${formatted}원` : `$${formatted}`;
+}
+
+function relativeTimeLabel(isoString) {
+  if (!isoString) {
+    return "시간 정보 없음";
+  }
+  const then = new Date(isoString).getTime();
+  if (!Number.isFinite(then)) {
+    return "시간 정보 없음";
+  }
+  const diffMs = Date.now() - then;
+  const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+  if (diffHours < 1) {
+    return "1시간 이내";
+  }
+  if (diffHours < 24) {
+    return `${diffHours}시간 전`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}일 전`;
+}
+
+function extractMacroQuotes(quotes) {
+  const next = {};
+  for (const id of Object.keys(MACRO_QUOTE_META)) {
+    const quote = quotes?.[id];
+    const price = Number(quote?.price);
+    if (quote && Number.isFinite(price) && price > 0) {
+      next[id] = { ...quote, price };
+    }
+  }
+  macroQuotes = next;
+  renderCalendarBriefing();
+}
+
+function renderCalendarBriefing() {
+  if (!calendarBriefing) {
+    return;
+  }
+
+  const macroIds = Object.keys(MACRO_QUOTE_META);
+  const tiles = macroIds
+    .map((id) => {
+      const meta = MACRO_QUOTE_META[id];
+      const quote = macroQuotes[id];
+      const value = quote ? formatMacroPrice(id, quote.price) : "갱신 대기";
+      const dateLabel = quote?.sourceDate ? `${quote.sourceDate} 기준` : "GitHub Actions 첫 갱신 대기 중";
+      return `
+        <article class="calendar-stat">
+          <span class="calendar-stat-label">${meta.label}</span>
+          <strong class="calendar-stat-value">${value}</strong>
+          <small class="calendar-stat-date">${dateLabel}</small>
+        </article>
+      `;
+    })
+    .join("");
+
+  const latestNews = Object.values(marketNewsData?.categories || {})
+    .flatMap((category) => category.items || [])
+    .filter((item) => item.pubDate)
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 3);
+
+  const newsList = latestNews.length
+    ? latestNews
+        .map(
+          (item) => `
+            <li>
+              <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>
+              <small>${item.source || "출처 미상"} · ${relativeTimeLabel(item.pubDate)}</small>
+            </li>
+          `
+        )
+        .join("")
+    : `<li class="calendar-news-empty">뉴스는 GitHub Actions가 매시 정각 이후 첫 갱신에서 채워집니다.</li>`;
+
+  calendarBriefing.innerHTML = `
+    <div class="calendar-stat-row">${tiles}</div>
+    <div class="calendar-briefing-news">
+      <strong>오늘의 헤드라인</strong>
+      <ul>${newsList}</ul>
+    </div>
+  `;
+}
+
+async function loadMacroCalendar() {
+  try {
+    const response = await fetch(MACRO_CALENDAR_URL, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`캘린더 응답 ${response.status}`);
+    }
+    macroCalendarData = await response.json();
+    renderInvestmentCalendar();
+  } catch (error) {
+    if (calendarMeta) {
+      setText(calendarMeta, `캘린더 데이터를 불러오지 못했습니다: ${error.message}`);
+    }
+  }
+}
+
+async function loadMarketNews() {
+  try {
+    const response = await fetch(MARKET_NEWS_URL, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`뉴스 응답 ${response.status}`);
+    }
+    marketNewsData = await response.json();
+    renderCalendarNews();
+    renderCalendarBriefing();
+  } catch (error) {
+    if (calendarNewsMeta) {
+      setText(calendarNewsMeta, `뉴스 데이터를 불러오지 못했습니다: ${error.message}`);
+    }
+  }
+}
+
+function renderInvestmentCalendar() {
+  if (!calendarGrid || !macroCalendarData) {
+    return;
+  }
+
+  const now = new Date();
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const eventsByMonth = new Map();
+
+  for (const event of macroCalendarData.events || []) {
+    const monthKey = event.month || (event.date ? event.date.slice(0, 7) : null);
+    if (!monthKey) continue;
+    if (!eventsByMonth.has(monthKey)) {
+      eventsByMonth.set(monthKey, []);
+    }
+    eventsByMonth.get(monthKey).push(event);
+  }
+
+  const quarterLensByIndex = ["2026-Q1", "2026-Q2", "2026-Q3", "2026-Q4"].map(
+    (key) => (macroCalendarData.quarterlyLens || []).find((entry) => entry.quarter === key) || null
+  );
+
+  const cards = MONTH_LABELS.map((label, index) => {
+    const monthKey = `${macroCalendarData.year}-${String(index + 1).padStart(2, "0")}`;
+    const events = (eventsByMonth.get(monthKey) || []).slice().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    const isCurrent = monthKey === currentMonthKey;
+    const quarterIndex = QUARTER_OF_MONTH_INDEX[index];
+    const isQuarterStart = index % 3 === 0;
+    const lens = quarterLensByIndex[quarterIndex];
+
+    const eventRows = events.length
+      ? events
+          .map((event) => {
+            const typeMeta = CALENDAR_TYPE_META[event.type] || { label: event.type, className: "" };
+            const dateLabel = event.date
+              ? `${Number(event.date.slice(8, 10))}일${event.endDate ? `~${Number(event.endDate.slice(8, 10))}일` : ""}`
+              : "월중";
+            const confidenceNote = event.confidence === "month-only"
+              ? " · 일자 미확정"
+              : event.confidence === "pattern"
+                ? " · 관례적 패턴"
+                : "";
+            return `
+              <li class="calendar-event">
+                <span class="calendar-event-date">${dateLabel}</span>
+                <span class="calendar-badge ${typeMeta.className}">${typeMeta.label}</span>
+                <span class="calendar-event-body">
+                  <strong>${event.title}</strong>
+                  <small>${event.region === "KR" ? "한국" : "미국"}${confidenceNote}${event.note ? ` · ${event.note}` : ""}</small>
+                </span>
+              </li>
+            `;
+          })
+          .join("")
+      : `<li class="calendar-event calendar-event-empty">예정된 매크로 일정이 없습니다.</li>`;
+
+    const lensBlock = isQuarterStart && lens
+      ? `
+        <div class="calendar-quarter-note">
+          <span class="eyebrow">${lens.quarter} 매크로 메모</span>
+          <strong>${lens.title}</strong>
+          <p>${lens.body}</p>
+        </div>
+      `
+      : "";
+
+    return `
+      ${lensBlock}
+      <article class="calendar-month${isCurrent ? " is-current" : ""}">
+        <div class="calendar-month-head">
+          <strong>${label}</strong>
+          ${isCurrent ? '<span class="calendar-current-chip">이번 달</span>' : ""}
+        </div>
+        <ul class="calendar-event-list">${eventRows}</ul>
+      </article>
+    `;
+  }).join("");
+
+  calendarGrid.innerHTML = cards;
+
+  if (calendarMeta) {
+    setText(
+      calendarMeta,
+      `${macroCalendarData.year}년 일정 · 정적 큐레이션 데이터(${macroCalendarData.curatedAt} 기준) · 실제 매매 전 기관 공식 발표로 재확인하세요.`
+    );
+  }
+}
+
+function renderCalendarNews() {
+  if (!calendarNewsGrid || !marketNewsData) {
+    return;
+  }
+
+  const categories = Object.values(marketNewsData.categories || {});
+  if (!categories.length) {
+    calendarNewsGrid.innerHTML = `<p class="calendar-news-empty">뉴스는 GitHub Actions가 매시 정각 이후 첫 갱신에서 채워집니다.</p>`;
+    if (calendarNewsMeta) {
+      setText(calendarNewsMeta, "아직 수집된 뉴스가 없습니다.");
+    }
+    return;
+  }
+
+  const sentimentLabel = { positive: "호재", negative: "악재", neutral: "중립" };
+
+  calendarNewsGrid.innerHTML = categories
+    .map((category) => {
+      const items = (category.items || [])
+        .map(
+          (item) => `
+            <li class="news-item">
+              <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>
+              <div class="news-item-meta">
+                <span class="news-sentiment news-sentiment-${item.sentiment}">${sentimentLabel[item.sentiment] || "중립"}</span>
+                <small>${item.source || "출처 미상"} · ${relativeTimeLabel(item.pubDate)}</small>
+              </div>
+            </li>
+          `
+        )
+        .join("");
+      return `
+        <article class="calendar-news-column">
+          <h5>${category.label}</h5>
+          <ul>${items}</ul>
+        </article>
+      `;
+    })
+    .join("");
+
+  if (calendarNewsMeta) {
+    setText(
+      calendarNewsMeta,
+      `Google News RSS 기준 · ${relativeTimeLabel(marketNewsData.updatedAt)} 갱신 · 긍정/부정 태그는 제목의 키워드로 자동 분류한 단순 참고용입니다.`
+    );
+  }
+}
+
 async function loadLiveSnapshots(options = {}) {
   try {
     const snapshotUrl = options.bustCache
@@ -2576,6 +2863,8 @@ async function loadLiveSnapshots(options = {}) {
     const payload = await response.json();
     const quotes = payload?.quotes ?? {};
     let changed = false;
+
+    extractMacroQuotes(quotes);
 
     for (const [stockId, patch] of Object.entries(quotes)) {
       const stock = stockCatalog.find((item) => item.id === stockId);
@@ -2987,4 +3276,6 @@ loadStockIntoWorkbench(featuredStockCatalog[0]);
 renderAutoRefreshStatus();
 configureAutoRefresh();
 loadLiveSnapshots({ silent: true });
+loadMacroCalendar();
+loadMarketNews();
 })();

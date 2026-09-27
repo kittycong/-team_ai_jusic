@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quant Signal Desk</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -19,6 +22,8 @@
       <div class="hero-nav">
         <a class="nav-cta" href="#workbench">핵심 분석</a>
         <a class="nav-cta ghost" href="#comparison">비교표</a>
+        <a class="nav-cta ghost" href="#investment-calendar">투자 캘린더</a>
+        <a class="nav-cta ghost" href="#actual-universe">프리셋</a>
       </div>
     </nav>
 
@@ -463,6 +468,28 @@
             <tbody id="kospiRows"></tbody>
           </table>
         </div>
+      </div>
+    </section>
+
+    <section class="section" id="investment-calendar">
+      <div class="section-heading">
+        <p class="eyebrow">INVESTMENT CALENDAR</p>
+        <h3>연간 투자 캘린더</h3>
+        <p>FOMC, 한국은행 금통위, 실적시즌 같은 매크로 일정과 환율·유가 스냅샷, 국내외 시황 뉴스를 한 화면에서 확인합니다.</p>
+        <p class="section-meta" id="calendarMeta"></p>
+      </div>
+
+      <div class="calendar-briefing" id="calendarBriefing"></div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <div class="calendar-news-section">
+        <div class="section-heading">
+          <p class="eyebrow">MARKET HEADLINES</p>
+          <h4>주제별 시장 뉴스</h4>
+          <p class="section-meta" id="calendarNewsMeta"></p>
+        </div>
+        <div class="calendar-news-grid" id="calendarNewsGrid"></div>
       </div>
     </section>
 

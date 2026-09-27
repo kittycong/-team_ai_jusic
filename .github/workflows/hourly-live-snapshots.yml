@@ -26,17 +26,20 @@ jobs:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
         run: node scripts/refresh-live-snapshots.mjs
 
+      - name: Refresh market news
+        run: node scripts/refresh-market-news.mjs
+
       - name: Commit updated snapshot
         id: commit
         run: |
-          if git diff --quiet -- live-snapshots.json; then
+          if git diff --quiet -- live-snapshots.json market-news.json; then
             echo "No snapshot changes"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add live-snapshots.json
+          git add live-snapshots.json market-news.json
           git commit -m "chore: refresh live snapshots"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
