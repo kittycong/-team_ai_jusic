@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "devfast": {
+      "source": {
+        "source": "github",
+        "repo": "devdotfast/whiteboard"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "whiteboard@devfast": true
+  }
+}
