@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   refresh-live-snapshots:
@@ -26,9 +27,11 @@ jobs:
         run: node scripts/refresh-live-snapshots.mjs
 
       - name: Commit updated snapshot
+        id: commit
         run: |
           if git diff --quiet -- live-snapshots.json; then
             echo "No snapshot changes"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -36,3 +39,12 @@ jobs:
           git add live-snapshots.json
           git commit -m "chore: refresh live snapshots"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN do not trigger other workflows,
+      # so start the Pages deploy explicitly (workflow_dispatch is allowed).
+      - name: Redeploy GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref "${{ github.ref_name }}"

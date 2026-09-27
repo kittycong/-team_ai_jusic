@@ -10,13 +10,21 @@ const today = new Date().toISOString().slice(0, 10);
 const twelveApiKey = process.env.TWELVE_DATA_API_KEY || "";
 
 const featuredStocks = [
-  { id: "005930:KRX", symbol: "005930:KRX", market: "KRX", currency: "KRW", stooq: null, twelve: "005930:KRX" },
-  { id: "000660:KRX", symbol: "000660:KRX", market: "KRX", currency: "KRW", stooq: null, twelve: "000660:KRX" },
-  { id: "AAPL", symbol: "AAPL", market: "NASDAQ", currency: "USD", stooq: "aapl.us", twelve: "AAPL" },
-  { id: "MSFT", symbol: "MSFT", market: "NASDAQ", currency: "USD", stooq: "msft.us", twelve: "MSFT" },
-  { id: "NVDA", symbol: "NVDA", market: "NASDAQ", currency: "USD", stooq: "nvda.us", twelve: "NVDA" },
-  { id: "GOOGL", symbol: "GOOGL", market: "NASDAQ", currency: "USD", stooq: "googl.us", twelve: "GOOGL" }
+  { id: "005930:KRX", symbol: "005930:KRX", market: "KRX", currency: "KRW", yahoo: "005930.KS", stooq: null, twelve: "005930:KRX" },
+  { id: "000660:KRX", symbol: "000660:KRX", market: "KRX", currency: "KRW", yahoo: "000660.KS", stooq: null, twelve: "000660:KRX" },
+  { id: "AAPL", symbol: "AAPL", market: "NASDAQ", currency: "USD", yahoo: "AAPL", stooq: "aapl.us", twelve: "AAPL" },
+  { id: "MSFT", symbol: "MSFT", market: "NASDAQ", currency: "USD", yahoo: "MSFT", stooq: "msft.us", twelve: "MSFT" },
+  { id: "NVDA", symbol: "NVDA", market: "NASDAQ", currency: "USD", yahoo: "NVDA", stooq: "nvda.us", twelve: "NVDA" },
+  { id: "GOOGL", symbol: "GOOGL", market: "NASDAQ", currency: "USD", yahoo: "GOOGL", stooq: "googl.us", twelve: "GOOGL" }
 ];
+
+function isValidPrice(value) {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
+}
+
+function isValidQuote(quote) {
+  return Boolean(quote) && isValidPrice(quote.price);
+}
 
 async function readExistingSnapshots() {
   try {
@@ -25,6 +33,37 @@ async function readExistingSnapshots() {
   } catch {
     return { updatedAt: null, provider: "bootstrap", quotes: {} };
   }
+}
+
+async function fetchYahooQuote(stock) {
+  if (!stock.yahoo) {
+    return null;
+  }
+
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(stock.yahoo)}?interval=1d&range=1d`;
+  const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  const meta = data?.chart?.result?.[0]?.meta;
+  const price = Number(meta?.regularMarketPrice);
+  if (!isValidPrice(price)) {
+    return null;
+  }
+
+  const sourceDate = meta.regularMarketTime
+    ? new Date(meta.regularMarketTime * 1000).toISOString().slice(0, 10)
+    : today;
+
+  return {
+    price,
+    currency: meta.currency || stock.currency,
+    sourceDate,
+    sourceLabel: "GitHub Actions / Yahoo Finance",
+    sourceNote: `GitHub Actions에서 ${sourceDate} 기준으로 Yahoo Finance 공개 시세를 반영했습니다.`
+  };
 }
 
 async function fetchStooqQuote(stock) {
@@ -39,8 +78,13 @@ async function fetchStooqQuote(stock) {
     return null;
   }
 
+  const price = Number(parts[6]);
+  if (!isValidPrice(price)) {
+    return null;
+  }
+
   return {
-    price: Number(parts[6]),
+    price,
     currency: stock.currency,
     sourceDate: today,
     sourceLabel: "GitHub Actions / Stooq",
@@ -60,8 +104,13 @@ async function fetchTwelveQuote(stock) {
     return null;
   }
 
+  const price = Number(data.close ?? data.price);
+  if (!isValidPrice(price)) {
+    return null;
+  }
+
   return {
-    price: Number(data.close ?? data.price),
+    price,
     currency: data.currency || stock.currency,
     sourceDate: today,
     sourceLabel: "GitHub Actions / Twelve Data",
@@ -69,27 +118,56 @@ async function fetchTwelveQuote(stock) {
   };
 }
 
+async function tryFetch(fetcher, stock) {
+  try {
+    const quote = await fetcher(stock);
+    return isValidQuote(quote) ? quote : null;
+  } catch (error) {
+    console.warn(`${fetcher.name} failed for ${stock.id}: ${error.message}`);
+    return null;
+  }
+}
+
 async function refreshStock(stock, existingQuote) {
-  if (stock.market === "NASDAQ") {
-    return (await fetchStooqQuote(stock)) || existingQuote || null;
+  const fetchers = stock.market === "NASDAQ"
+    ? [fetchYahooQuote, fetchStooqQuote, fetchTwelveQuote]
+    : [fetchTwelveQuote, fetchYahooQuote];
+
+  for (const fetcher of fetchers) {
+    const quote = await tryFetch(fetcher, stock);
+    if (quote) {
+      return { quote, source: fetcher.name };
+    }
   }
 
-  return (await fetchTwelveQuote(stock)) || existingQuote || null;
+  // Keep the last valid quote; never replace it with an invalid one.
+  return { quote: isValidQuote(existingQuote) ? existingQuote : null, source: null };
 }
 
 const existing = await readExistingSnapshots();
 const nextQuotes = { ...(existing.quotes || {}) };
+const usedSources = new Set();
 
 for (const stock of featuredStocks) {
-  const updated = await refreshStock(stock, nextQuotes[stock.id]);
-  if (updated) {
-    nextQuotes[stock.id] = updated;
+  const { quote, source } = await refreshStock(stock, nextQuotes[stock.id]);
+  if (quote) {
+    nextQuotes[stock.id] = quote;
+  } else {
+    delete nextQuotes[stock.id];
   }
+  if (source) {
+    usedSources.add(source.replace(/^fetch|Quote$/g, "").toLowerCase());
+  }
+}
+
+if (JSON.stringify(nextQuotes) === JSON.stringify(existing.quotes || {})) {
+  console.log("No quote changes; leaving live-snapshots.json untouched.");
+  process.exit(0);
 }
 
 const output = {
   updatedAt: new Date().toISOString(),
-  provider: twelveApiKey ? "stooq+twelve" : "stooq+existing",
+  provider: usedSources.size ? [...usedSources].join("+") : "existing",
   quotes: nextQuotes
 };
 

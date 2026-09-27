@@ -1,48 +1,48 @@
 {
-  "updatedAt": "2026-09-27T13:48:59.368Z",
-  "provider": "stooq+existing",
+  "updatedAt": "2026-09-27T14:53:04.555Z",
+  "provider": "yahoo",
   "quotes": {
     "005930:KRX": {
       "price": 285500,
       "currency": "KRW",
-      "sourceDate": "2026-05-11",
-      "sourceLabel": "Bootstrap snapshot",
-      "sourceNote": "초기 로컬 스냅샷입니다. GitHub Actions 또는 수동 갱신으로 업데이트할 수 있습니다."
+      "sourceDate": "2026-09-23",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-23 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "000660:KRX": {
-      "price": 1880000,
+      "price": 1862000,
       "currency": "KRW",
-      "sourceDate": "2026-05-11",
-      "sourceLabel": "Bootstrap snapshot",
-      "sourceNote": "초기 로컬 스냅샷입니다. GitHub Actions 또는 수동 갱신으로 업데이트할 수 있습니다."
+      "sourceDate": "2026-09-23",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-23 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "AAPL": {
-      "price": null,
+      "price": 341.07,
       "currency": "USD",
-      "sourceDate": "2026-09-12",
-      "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
+      "sourceDate": "2026-09-25",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-25 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "MSFT": {
-      "price": null,
+      "price": 516.17,
       "currency": "USD",
-      "sourceDate": "2026-09-12",
-      "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
+      "sourceDate": "2026-09-25",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-25 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "NVDA": {
-      "price": null,
+      "price": 225.07,
       "currency": "USD",
-      "sourceDate": "2026-09-12",
-      "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
+      "sourceDate": "2026-09-25",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-25 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "GOOGL": {
-      "price": null,
+      "price": 343.92,
       "currency": "USD",
-      "sourceDate": "2026-09-12",
-      "sourceLabel": "GitHub Actions / Stooq",
-      "sourceNote": "GitHub Actions에서 2026-09-12 기준으로 공개 시세를 반영했습니다."
+      "sourceDate": "2026-09-25",
+      "sourceLabel": "GitHub Actions / Yahoo Finance",
+      "sourceNote": "GitHub Actions에서 2026-09-25 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     }
   }
 }

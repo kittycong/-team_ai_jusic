@@ -2583,6 +2583,12 @@ async function loadLiveSnapshots(options = {}) {
         continue;
       }
 
+      // A broken upstream can leave price null/NaN; keep the catalog value instead.
+      const price = Number(patch?.price);
+      if (patch?.price == null || !Number.isFinite(price) || price <= 0) {
+        continue;
+      }
+
       syncStockRecord(stockId, {
         ...patch,
         sourceLabel: patch.sourceLabel || stock.sourceLabel,
@@ -2758,7 +2764,7 @@ async function refreshLiveQuote(options = {}) {
     return;
   }
   const provider = providerSelect.value;
-  const apiKey = apiKeyInput.value.trim();
+  const apiKey = apiKeyInput?.value.trim() ?? "";
   const proxyUrl = proxyUrlInput?.value.trim() || readKisProxyUrl();
   const currentStock = readFormStock();
 
