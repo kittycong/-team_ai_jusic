@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T11:42:33.638Z",
+  "updatedAt": "2026-10-14T17:00:44.038Z",
   "provider": "yahoo",
   "quotes": {
     "005930:KRX": {
@@ -17,32 +17,32 @@
       "sourceNote": "GitHub Actions에서 2026-10-14 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "AAPL": {
-      "price": 341.27,
+      "price": 344.195,
       "currency": "USD",
-      "sourceDate": "2026-10-13",
+      "sourceDate": "2026-10-14",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
-      "sourceNote": "GitHub Actions에서 2026-10-13 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-10-14 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "MSFT": {
-      "price": 543.45,
+      "price": 536.285,
       "currency": "USD",
-      "sourceDate": "2026-10-13",
+      "sourceDate": "2026-10-14",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
-      "sourceNote": "GitHub Actions에서 2026-10-13 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-10-14 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "NVDA": {
-      "price": 228.52,
+      "price": 222.57,
       "currency": "USD",
-      "sourceDate": "2026-10-13",
+      "sourceDate": "2026-10-14",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
-      "sourceNote": "GitHub Actions에서 2026-10-13 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-10-14 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "GOOGL": {
-      "price": 353.78,
+      "price": 350.5,
       "currency": "USD",
-      "sourceDate": "2026-10-13",
+      "sourceDate": "2026-10-14",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
-      "sourceNote": "GitHub Actions에서 2026-10-13 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
+      "sourceNote": "GitHub Actions에서 2026-10-14 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     }
   }
 }
