@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-10-26T04:35:21.385Z",
+  "updatedAt": "2026-10-26T10:56:34.259Z",
   "provider": "yahoo",
   "quotes": {
     "005930:KRX": {
-      "price": 214250,
+      "price": 213000,
       "currency": "KRW",
       "sourceDate": "2026-10-26",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
       "sourceNote": "GitHub Actions에서 2026-10-26 기준으로 Yahoo Finance 공개 시세를 반영했습니다."
     },
     "000660:KRX": {
-      "price": 1286000,
+      "price": 1275000,
       "currency": "KRW",
       "sourceDate": "2026-10-26",
       "sourceLabel": "GitHub Actions / Yahoo Finance",
